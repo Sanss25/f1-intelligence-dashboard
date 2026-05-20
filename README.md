@@ -5,7 +5,7 @@
 **[→ Live Demo](https://pitwall-lilac.vercel.app)** &nbsp;|&nbsp; **[→ Data Pipeline](scripts/fetch_race_data.py)**
 
 <!-- To add a screenshot: take a screenshot of https://pitwall-lilac.vercel.app, upload it to your GitHub repo under /public/screenshot.png, then replace the line below -->
-<!-- ![PitWall Dashboard](public/screenshot.png) -->
+![PitWall Dashboard](public/screenshot.jpeg)
 
 ---
 

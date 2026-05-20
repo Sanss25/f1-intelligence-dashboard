@@ -2,10 +2,10 @@
 
 > Real-time Formula 1 strategy analysis powered by FastF1 telemetry data and an AI race engineer running on Claude.
 
-**[→ Live Demo](https://pitwall-f1.vercel.app)** &nbsp;|&nbsp; **[→ Data Pipeline](scripts/fetch_race_data.py)**
+**[→ Live Demo](https://pitwall-lilac.vercel.app)** &nbsp;|&nbsp; **[→ Data Pipeline](scripts/fetch_race_data.py)**
 
-![PitWall Dashboard](https://i.imgur.com/placeholder.png)
-<!-- Replace with a real screenshot: cmd+shift+4 on Mac, then drag to GitHub -->
+<!-- To add a screenshot: take a screenshot of https://pitwall-lilac.vercel.app, upload it to your GitHub repo under /public/screenshot.png, then replace the line below -->
+<!-- ![PitWall Dashboard](public/screenshot.png) -->
 
 ---
 
@@ -169,7 +169,7 @@ git push origin main
 npm run deploy
 ```
 
-Your live URL will be `https://pitwall-f1.vercel.app` (or your custom domain).
+Your live URL: **https://pitwall-lilac.vercel.app**
 
 ---
 

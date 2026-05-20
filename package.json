@@ -1,0 +1,33 @@
+{
+  "name": "pitwall-f1",
+  "version": "1.0.0",
+  "description": "F1 Race Intelligence Dashboard — Real telemetry via FastF1 + AI race engineer powered by Claude",
+  "main": "api/engineer.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "fetch-data": "python scripts/fetch_race_data.py",
+    "fetch-2024-australia": "python scripts/fetch_race_data.py --year 2024 --round 1 --session R",
+    "fetch-2024-monaco": "python scripts/fetch_race_data.py --year 2024 --round 8 --session R",
+    "fetch-2024-brazil": "python scripts/fetch_race_data.py --year 2024 --round 21 --session R"
+  },
+  "dependencies": {
+    "groq-sdk": "^1.2.0"
+  },
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "keywords": [
+    "f1",
+    "formula1",
+    "fastf1",
+    "telemetry",
+    "data-engineering",
+    "claude-ai"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -433,6 +433,7 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
   <button class="ctrl-btn" onclick="cycleFlag()">Cycle Flag</button>
   <button class="ctrl-btn" onclick="resetRace()">↺ Reset</button>
   <div class="ctrl-sep"></div>
+  <button class="ctrl-btn" id="btnLivePoll" onclick="toggleLivePoll(this)" style="color:var(--green);border-color:rgba(0,200,83,0.4)">◉ LIVE DATA ON</button>
   <span class="speed-lbl">Sim Speed</span>
   <input type="range" id="speedSlider" min="1" max="5" value="2" step="1">
 </div>
@@ -1359,6 +1360,21 @@ function renderAll(){
 // ─── CONTROLS ──────────────────────────────────────────────────────────────
 function toggleSim(btn){simRunning=!simRunning;btn.textContent=simRunning?'⏸ Pause':'▶ Resume';btn.classList.toggle('active',simRunning)}
 
+function toggleLivePoll(btn) {
+  if (livePolling) {
+    stopLivePolling();
+    btn.textContent = '◌ LIVE DATA OFF';
+    btn.style.color = 'var(--muted)';
+    btn.style.borderColor = 'var(--border2)';
+  } else {
+    liveDataFailures = 0;
+    startLivePolling();
+    btn.textContent = '◉ LIVE DATA ON';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'rgba(0,200,83,0.4)';
+  }
+}
+
 function triggerRandomPit(){
   const candidates=drivers.filter(d=>!d.inPit&&d.tireAge>8);
   if(!candidates.length)return;
@@ -1610,6 +1626,134 @@ function renderHistoricalChart(){
 
 // Load real FastF1 data if available, otherwise use sim fallback
 loadRealData();
+
+// ─── OPENF1 LIVE POLLING ───────────────────────────────────────────────────
+let livePolling = null;
+let lastSessionKey = null;
+let isLiveSession = false;
+let liveDataFailures = 0;
+
+async function fetchLiveData() {
+  try {
+    const res = await fetch('/api/openf1');
+    if (!res.ok) throw new Error('openf1 proxy error ' + res.status);
+    const data = await res.json();
+    if (!data.ok || !data.drivers || !data.drivers.length) throw new Error(data.error || 'no driver data');
+    liveDataFailures = 0;
+    injectLiveData(data);
+  } catch(e) {
+    liveDataFailures++;
+    console.warn('Live data fetch failed:', e.message, `(${liveDataFailures} failures)`);
+    if (liveDataFailures >= 5) {
+      // Stop polling after 5 consecutive failures, fall back to sim
+      stopLivePolling();
+      updateLiveBadge(false, 'OpenF1 unavailable — sim mode');
+    }
+  }
+}
+
+function injectLiveData(data) {
+  isLiveSession = data.isLive;
+
+  // Update drivers array with real data
+  if (data.drivers && data.drivers.length > 0) {
+    // Merge — preserve sim fields not in OpenF1 (posChange, inPit, justExited)
+    const prevDriverMap = {};
+    drivers.forEach(d => { prevDriverMap[d.code] = d; });
+
+    drivers = data.drivers.map(d => ({
+      ...d,
+      posChange: prevDriverMap[d.code]?.posChange || 0,
+      inPit: prevDriverMap[d.code]?.inPit || false,
+      justExited: prevDriverMap[d.code]?.justExited || false,
+    }));
+
+    // Rebuild lapHistory from OpenF1 data
+    data.drivers.forEach(d => {
+      if (d.lapHistory && d.lapHistory.length) {
+        lapHistory[d.code] = d.lapHistory;
+      }
+    });
+  }
+
+  // Pit log
+  if (data.pitLog && data.pitLog.length) {
+    pitLog = data.pitLog;
+  }
+
+  // Lap counter
+  if (data.meta) {
+    currentLap = data.meta.currentLap || currentLap;
+    totalLaps  = data.meta.totalLaps  || totalLaps;
+    document.getElementById('lapCurrent').textContent = currentLap;
+
+    // Update header race name
+    if (data.meta.eventName) {
+      document.querySelector('.race-name').textContent =
+        `${data.meta.flag || '🏁'} ${data.meta.eventName}`;
+      document.querySelector('.race-sub').textContent =
+        `${data.meta.circuitName || ''} · Round ${data.meta.round || '—'} · ${data.meta.year || 2025}`;
+    }
+  }
+
+  // Weather
+  if (data.weather) {
+    document.getElementById('trackTempVal').textContent = data.weather.trackTemp + '°C';
+    document.getElementById('airTempVal').textContent   = data.weather.airTemp   + '°C';
+    document.getElementById('humidVal').textContent     = data.weather.humidity  + '%';
+    document.getElementById('windVal').textContent      = data.weather.windSpeed + ' kph';
+  }
+
+  // Flag state
+  if (data.flagState) {
+    flagState = data.flagState;
+    updateFlag();
+  }
+
+  // Ticker
+  if (data.rcMessages) {
+    updateTicker(data.rcMessages || 'OpenF1 live data active');
+  }
+
+  // Session badge
+  updateLiveBadge(data.isLive, data.meta?.eventName);
+
+  // Replay slider max
+  const slider = document.getElementById('replaySlider');
+  if (slider) { slider.max = totalLaps; if (!replayMode) slider.value = currentLap; }
+
+  // Re-render everything
+  renderAll();
+}
+
+function updateLiveBadge(live, name) {
+  const badge = document.getElementById('dataBadge');
+  const liveBadge = document.getElementById('liveBadge');
+  if (!badge) return;
+  if (live) {
+    badge.textContent = `● OPENF1 LIVE — ${name || 'Race'}`;
+    badge.style.color = 'var(--green)';
+    if (liveBadge) { liveBadge.innerHTML = '<div class="live-dot"></div>LIVE'; liveBadge.style.borderColor = 'rgba(0,200,83,0.3)'; liveBadge.style.color = 'var(--green)'; }
+  } else {
+    badge.textContent = `◉ OPENF1 — ${name || 'Latest session'} · Polling 5s`;
+    badge.style.color = 'var(--blue)';
+  }
+}
+
+function startLivePolling() {
+  if (livePolling) return;
+  fetchLiveData(); // immediate first fetch
+  livePolling = setInterval(fetchLiveData, 5000); // then every 5s
+  console.log('✅ OpenF1 live polling started (5s interval)');
+}
+
+function stopLivePolling() {
+  if (livePolling) { clearInterval(livePolling); livePolling = null; }
+}
+
+// Start polling after initial data load (give FastF1 fallback 2s to settle)
+setTimeout(startLivePolling, 2000);
+
 
 // ─── KEYBOARD SHORTCUTS ────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {

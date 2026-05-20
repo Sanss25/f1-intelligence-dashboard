@@ -64,7 +64,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 
 /* APP WRAPPER */
 .app-wrapper{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.content-grid{flex:1;display:grid;grid-template-columns:1fr 360px;overflow:hidden}
+.content-grid{flex:1;display:grid;grid-template-columns:1fr 5px 360px;overflow:hidden}
 
 /* CTRL BAR */
 .ctrl-bar{display:flex;gap:10px;padding:8px 12px;background:var(--surface2);border-bottom:1px solid var(--border);align-items:center;flex-shrink:0}
@@ -309,6 +309,91 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
   .tower-col-headers,.driver-row{grid-template-columns:32px 36px 48px 1fr 58px 58px 64px 0 0 0}
   .cell:nth-child(8),.cell:nth-child(9),.cell:nth-child(10){display:none}
 }
+
+/* ── TOOLTIPS ── */
+[data-tip]{position:relative;cursor:help}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1C2130;border:1px solid rgba(255,255,255,0.15);color:#E8ECF0;font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:9000;letter-spacing:0.04em;border-radius:2px}
+[data-tip]:hover::after{opacity:1}
+
+/* ── KEYBOARD SHORTCUT HINT ── */
+.kbd-hint{position:fixed;bottom:52px;right:14px;background:var(--surface2);border:1px solid var(--border2);padding:10px 14px;font-family:var(--mono);font-size:10px;color:var(--muted);z-index:500;display:none;line-height:1.8;letter-spacing:0.05em}
+.kbd-hint.visible{display:block}
+.kbd-hint-title{color:var(--text);margin-bottom:4px;font-size:9px;letter-spacing:0.15em}
+kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 5px;border-radius:2px;color:var(--text);font-size:9px}
+
+/* ── COLLAPSIBLE TOWER ── */
+.tower-panel{transition:min-width 0.25s ease}
+.tower-panel.collapsed{min-width:0!important;width:0!important;overflow:hidden;border:none}
+.tower-toggle{position:absolute;left:0;top:50%;transform:translateY(-50%);width:16px;height:48px;background:var(--surface2);border:1px solid var(--border2);border-left:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:100;color:var(--muted);font-size:10px;transition:color 0.15s}
+.tower-toggle:hover{color:var(--text)}
+.content-grid{position:relative}
+
+/* ── RESIZABLE DIVIDER ── */
+.resize-handle{width:5px;cursor:col-resize;background:transparent;flex-shrink:0;position:relative;z-index:50}
+.resize-handle:hover,.resize-handle.dragging{background:rgba(255,214,0,0.25)}
+
+/* ── DRIVER DETAIL DRAWER ── */
+.driver-drawer{position:fixed;top:0;right:-420px;width:400px;height:100vh;background:var(--surface);border-left:1px solid var(--border2);z-index:1000;transition:right 0.28s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.driver-drawer.open{right:0}
+.drawer-header{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border2);flex-shrink:0;background:var(--surface2)}
+.drawer-close{margin-left:auto;background:none;border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:11px;padding:4px 10px;cursor:pointer;transition:all 0.15s;letter-spacing:0.08em}
+.drawer-close:hover{color:var(--text);border-color:var(--border2)}
+.drawer-body{padding:16px;flex:1}
+.drawer-section{margin-bottom:18px}
+.drawer-section-title{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.drawer-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.drawer-stat{background:var(--surface2);border:1px solid var(--border);padding:9px 12px}
+.drawer-stat-val{font-family:var(--mono);font-size:16px;color:var(--yellow);margin-bottom:2px}
+.drawer-stat-lbl{font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+.drawer-lap-list{display:flex;flex-direction:column;gap:3px;max-height:150px;overflow-y:auto}
+.drawer-lap-item{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px}
+.drawer-lap-num{color:var(--muted);width:28px}
+.drawer-lap-time{flex:1}
+.drawer-lap-bar{height:3px;border-radius:1px;flex-shrink:0}
+canvas.drawer-canvas{width:100%;display:block;border:1px solid var(--border);margin-top:8px}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:999;display:none}
+.drawer-overlay.visible{display:block}
+
+/* ── STRATEGY RECOMMENDER ── */
+.strat-rec-panel{background:var(--surface2);border:1px solid rgba(255,214,0,0.2);padding:12px;margin-bottom:12px}
+.strat-rec-title{font-family:var(--mono);font-size:9px;color:var(--yellow);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.strat-rec-title::after{content:'';flex:1;height:1px;background:rgba(255,214,0,0.15)}
+.strat-card{background:var(--surface3);border:1px solid var(--border);padding:9px 11px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px}
+.strat-card.pit-now{border-color:rgba(232,0,61,0.35);background:rgba(232,0,61,0.04)}
+.strat-card.stay-out{border-color:rgba(0,200,83,0.35);background:rgba(0,200,83,0.04)}
+.strat-card.monitor{border-color:rgba(255,214,0,0.25)}
+.strat-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.strat-driver{font-weight:700;font-size:12px;letter-spacing:0.05em}
+.strat-rec{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4}
+.strat-badge{margin-left:auto;font-family:var(--mono);font-size:9px;padding:2px 7px;border:1px solid;flex-shrink:0;letter-spacing:0.08em}
+.strat-badge.pit{color:var(--red);border-color:rgba(232,0,61,0.4)}
+.strat-badge.stay{color:var(--green);border-color:rgba(0,200,83,0.4)}
+.strat-badge.watch{color:var(--yellow);border-color:rgba(255,214,0,0.4)}
+
+/* ── DRIVER COMPARISON ── */
+.compare-panel{padding:0}
+.compare-select-row{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.compare-select{flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:5px 8px;outline:none;cursor:pointer}
+.compare-select:focus{border-color:rgba(255,214,0,0.4)}
+.compare-btn{background:rgba(77,166,255,0.1);border:1px solid rgba(77,166,255,0.3);color:var(--blue);font-family:var(--mono);font-size:10px;padding:5px 12px;cursor:pointer;letter-spacing:0.08em;transition:all 0.15s;white-space:nowrap}
+.compare-btn:hover{background:rgba(77,166,255,0.2)}
+.compare-stat-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px;margin-bottom:12px}
+.compare-stat-table th{color:var(--muted);font-size:9px;letter-spacing:0.1em;padding:5px 4px;text-align:center;border-bottom:1px solid var(--border2)}
+.compare-stat-table td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--border)}
+.compare-stat-table td:first-child{color:var(--muted);font-size:10px;text-align:left}
+.compare-win{font-weight:700}
+canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);margin-top:4px}
+
+/* ── RACE REPLAY ── */
+.replay-bar{background:var(--surface2);border-top:1px solid var(--border2);padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.replay-lbl{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;flex-shrink:0}
+#replaySlider{flex:1;accent-color:var(--yellow);cursor:pointer}
+.replay-lap-display{font-family:var(--mono);font-size:11px;color:var(--yellow);width:60px;text-align:right;flex-shrink:0}
+.replay-mode-badge{font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid rgba(255,120,0,0.4);color:#FF7800;background:rgba(255,120,0,0.08);letter-spacing:0.1em;display:none}
+.replay-mode-badge.active{display:inline}
+
+/* ── ACTIVE TAB IMPROVEMENT ── */
+.ptab.active{color:var(--yellow);border-bottom-color:var(--yellow);background:rgba(255,214,0,0.04);font-weight:600}
 </style>
 </head>
 <body>
@@ -353,30 +438,33 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
 </div>
 
 <div class="drs-zones">
-  <span class="drs-label">DRS</span>
-  <span class="drs-zone-badge active" id="drs1">Zone 1 — OPEN</span>
-  <span class="drs-zone-badge active" id="drs2">Zone 2 — OPEN</span>
-  <span class="drs-zone-badge closed" id="drs3">Zone 3 — CLOSED</span>
+  <span class="drs-label" data-tip="Drag Reduction System — reduces aerodynamic drag on straights">DRS</span>
+  <span class="drs-zone-badge active" id="drs1" data-tip="Detection point before start/finish straight">Zone 1 — OPEN</span>
+  <span class="drs-zone-badge active" id="drs2" data-tip="Second detection point — rear wing zone">Zone 2 — OPEN</span>
+  <span class="drs-zone-badge closed" id="drs3" data-tip="Third DRS zone — currently inactive">Zone 3 — CLOSED</span>
 </div>
 
-<div class="content-grid">
+<div class="content-grid" id="contentGrid">
 
   <!-- TIMING TOWER -->
-  <div class="tower-panel">
+  <div class="tower-panel" id="towerPanel">
     <div class="tower-col-headers">
-      <div class="col-h">POS</div>
-      <div class="col-h">CHG</div>
+      <div class="col-h" data-tip="Race position">POS</div>
+      <div class="col-h" data-tip="Position change vs last lap">CHG</div>
       <div class="col-h"></div>
       <div class="col-h left">DRIVER</div>
-      <div class="col-h">GAP</div>
-      <div class="col-h">INT</div>
-      <div class="col-h">LAST LAP</div>
-      <div class="col-h">TIRE</div>
-      <div class="col-h">PITS</div>
-      <div class="col-h">STATUS</div>
+      <div class="col-h" data-tip="Gap to race leader">GAP</div>
+      <div class="col-h" data-tip="Interval to car ahead">INT</div>
+      <div class="col-h" data-tip="Last completed lap time">LAST LAP</div>
+      <div class="col-h" data-tip="Current tire compound and age in laps">TIRE</div>
+      <div class="col-h" data-tip="Number of pit stops made">PITS</div>
+      <div class="col-h" data-tip="DRS = Drag Reduction System active · PIT = in pit lane · OUT = exiting pits">STATUS</div>
     </div>
     <div class="tower-rows" id="towerRows"></div>
   </div>
+
+  <!-- RESIZE HANDLE -->
+  <div class="resize-handle" id="resizeHandle"></div>
 
   <!-- RIGHT PANEL -->
   <div class="right-panel">
@@ -387,6 +475,8 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
       <button class="ptab" onclick="switchTab('laptimes',this)">Lap Times</button>
       <button class="ptab" onclick="switchTab('dataviz',this)">Data Viz</button>
       <button class="ptab" onclick="switchTab('predict',this)">Predict</button>
+      <button class="ptab" onclick="switchTab('strategy',this)">Strategy</button>
+      <button class="ptab" onclick="switchTab('compare',this)">Compare</button>
       <button class="ptab" onclick="switchTab('telemetry',this)">Telemetry</button>
       <button class="ptab" onclick="switchTab('engineer',this)">AI Eng</button>
       <button class="ptab" onclick="switchTab('datahub',this)">Data Hub</button>
@@ -526,6 +616,32 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
         </div>
       </div>
 
+      <!-- STRATEGY RECOMMENDER -->
+      <div class="panel-section" id="tab-strategy">
+        <div class="strat-rec-panel">
+          <div class="strat-rec-title">⚡ Live Strategy Recommender</div>
+          <div id="stratRecommendations"><div class="ml-loading"><span class="ml-pulse">■</span> Analysing race state...</div></div>
+        </div>
+        <div style="margin-top:10px">
+          <div class="panel-title">Undercut / Overcut Windows</div>
+          <div id="stratWindows"></div>
+        </div>
+      </div>
+
+      <!-- DRIVER COMPARISON -->
+      <div class="panel-section" id="tab-compare">
+        <div class="compare-panel">
+          <div class="panel-title">Driver Head-to-Head</div>
+          <div class="compare-select-row">
+            <select class="compare-select" id="compareA"></select>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--muted)">vs</span>
+            <select class="compare-select" id="compareB"></select>
+            <button class="compare-btn" onclick="runComparison()">GO</button>
+          </div>
+          <div id="compareResult"></div>
+        </div>
+      </div>
+
       <!-- AI ENGINEER (Part 4) -->
       <div class="panel-section" id="tab-engineer">
         <div class="chat-wrapper">
@@ -567,6 +683,58 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
   <div class="message-ticker">
     <div class="ticker-text" id="tickerText">LEWIS HAMILTON SETS FASTEST LAP — 1:21.456 · VER closes to within 1.2s · PIT WINDOW OPEN laps 40-48 · Track temp rising to 47°C · DRS enabled all zones</div>
   </div>
+</div>
+
+<!-- REPLAY BAR -->
+<div class="replay-bar">
+  <span class="replay-lbl">REPLAY</span>
+  <input type="range" id="replaySlider" min="1" max="58" value="42" step="1" oninput="scrubReplay(this.value)">
+  <span class="replay-lap-display">LAP <span id="replayLapNum">42</span></span>
+  <span class="replay-mode-badge" id="replayBadge">REPLAY MODE</span>
+  <button class="ctrl-btn" onclick="exitReplay()" style="margin-left:8px;display:none" id="exitReplayBtn">▶ LIVE</button>
+</div>
+
+<!-- DRIVER DETAIL DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="driver-drawer" id="driverDrawer">
+  <div class="drawer-header">
+    <div class="team-bar" id="drawerTeamBar" style="width:6px;height:36px;border-radius:2px"></div>
+    <div>
+      <div id="drawerDriverCode" style="font-size:20px;font-weight:700;letter-spacing:0.08em"></div>
+      <div id="drawerDriverName" style="font-size:11px;color:var(--muted)"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">✕ CLOSE</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">
+      <div class="drawer-section-title">Race Stats</div>
+      <div class="drawer-stat-grid" id="drawerStats"></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Lap Time History</div>
+      <canvas class="drawer-canvas" id="drawerLapCanvas" height="100"></canvas>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Gap Evolution</div>
+      <canvas class="drawer-canvas" id="drawerGapCanvas" height="80"></canvas>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Recent Laps</div>
+      <div class="drawer-lap-list" id="drawerLapList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- KEYBOARD HINT -->
+<div class="kbd-hint" id="kbdHint">
+  <div class="kbd-hint-title">KEYBOARD SHORTCUTS</div>
+  <div><kbd>Space</kbd> Pause / Resume</div>
+  <div><kbd>S</kbd> Safety Car</div>
+  <div><kbd>V</kbd> VSC</div>
+  <div><kbd>P</kbd> Force Pit</div>
+  <div><kbd>R</kbd> Reset Race</div>
+  <div><kbd>T</kbd> Tower collapse</div>
+  <div><kbd>?</kbd> Toggle this panel</div>
 </div>
 
 </div>
@@ -747,6 +915,7 @@ function renderTower(){
       <div class="cell"><div class="cell-mono">${d.pits}</div></div>
       <div class="cell pit-indicator">${statusHTML}</div>
     `;
+    row.addEventListener('click', () => openDrawer(d.code));
     container.appendChild(row);
   });
 }
@@ -1172,13 +1341,19 @@ function renderAll(){
   renderIntervals();
   renderFastest();
   renderPitLog();
+  // Update replay slider max
+  const slider = document.getElementById('replaySlider');
+  if(slider && !replayMode){ slider.max = totalLaps; slider.value = currentLap; document.getElementById('replayLapNum').textContent = currentLap; }
   const activeTab=document.querySelector('.panel-section.active');
   if(activeTab){
     const id=activeTab.id;
     if(id==='tab-laptimes')renderLapChart();
     if(id==='tab-dataviz'){renderPaceChart();renderStrategyViz();renderGapChart()}
     if(id==='tab-telemetry'){renderTelemetry();renderDegradChart()}
+    if(id==='tab-strategy')renderStrategyRecommender();
   }
+  // Refresh drawer if open
+  if(selectedDriverCode) openDrawer(selectedDriverCode);
 }
 
 // ─── CONTROLS ──────────────────────────────────────────────────────────────
@@ -1233,6 +1408,8 @@ function switchTab(id,btn){
   if(id==='predict')runMLModel();
   if(id==='telemetry'){renderTelemetry();renderDegradChart()}
   if(id==='datahub'){setTimeout(()=>renderHistoricalChart(),50)}
+  if(id==='strategy'){renderStrategyRecommender()}
+  if(id==='compare'){populateCompareSelects();runComparison()}
 }
 
 // ─── VSC & RESET ───────────────────────────────────────────────────────────
@@ -1431,9 +1608,373 @@ function renderHistoricalChart(){
   ctx.fillText('Constructor Wins (All-Time)',padL,H-2);
 }
 
-// ─── BOOT ──────────────────────────────────────────────────────────────────
 // Load real FastF1 data if available, otherwise use sim fallback
 loadRealData();
+
+// ─── KEYBOARD SHORTCUTS ────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  switch(e.key) {
+    case ' ': e.preventDefault(); toggleSim(document.getElementById('btnRunning')); break;
+    case 's': case 'S': triggerSafetycar(); break;
+    case 'v': case 'V': triggerVSC(); break;
+    case 'p': case 'P': triggerRandomPit(); break;
+    case 'r': case 'R': resetRace(); break;
+    case 't': case 'T': collapseToggle(); break;
+    case '?': toggleKbdHint(); break;
+  }
+});
+
+function toggleKbdHint() {
+  document.getElementById('kbdHint').classList.toggle('visible');
+}
+
+// ─── TOWER COLLAPSE ────────────────────────────────────────────────────────
+let towerCollapsed = false;
+function collapseToggle() {
+  const panel = document.getElementById('towerPanel');
+  const grid = document.getElementById('contentGrid');
+  towerCollapsed = !towerCollapsed;
+  if (towerCollapsed) {
+    panel.classList.add('collapsed');
+    grid.style.gridTemplateColumns = '0 5px 1fr';
+  } else {
+    panel.classList.remove('collapsed');
+    grid.style.gridTemplateColumns = '1fr 5px 360px';
+  }
+}
+
+// ─── RESIZABLE PANEL ───────────────────────────────────────────────────────
+(function() {
+  const handle = document.getElementById('resizeHandle');
+  const grid = document.getElementById('contentGrid');
+  let dragging = false, startX = 0, startRight = 360;
+  handle.addEventListener('mousedown', e => {
+    dragging = true; startX = e.clientX;
+    const cols = getComputedStyle(grid).gridTemplateColumns.split(' ');
+    startRight = parseFloat(cols[cols.length - 1]) || 360;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const delta = startX - e.clientX;
+    const newRight = Math.max(260, Math.min(600, startRight + delta));
+    grid.style.gridTemplateColumns = `1fr 5px ${newRight}px`;
+  });
+  document.addEventListener('mouseup', () => {
+    dragging = false;
+    handle.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+})();
+
+// ─── DRIVER DETAIL DRAWER ──────────────────────────────────────────────────
+let selectedDriverCode = null;
+
+function openDrawer(code) {
+  const d = drivers.find(x => x.code === code);
+  if (!d) return;
+  selectedDriverCode = code;
+  document.getElementById('drawerTeamBar').style.background = d.color;
+  document.getElementById('drawerDriverCode').textContent = d.code;
+  document.getElementById('drawerDriverCode').style.color = d.color;
+  document.getElementById('drawerDriverName').textContent = d.name + ' · ' + d.team;
+  // Stats grid
+  const statsEl = document.getElementById('drawerStats');
+  const lapsLeft = totalLaps - currentLap;
+  statsEl.innerHTML = `
+    <div class="drawer-stat"><div class="drawer-stat-val" style="color:${d.color}">P${d.pos}</div><div class="drawer-stat-lbl">Position</div></div>
+    <div class="drawer-stat"><div class="drawer-stat-val">${fmtTime(d.bestLap)}</div><div class="drawer-stat-lbl">Best Lap</div></div>
+    <div class="drawer-stat"><div class="drawer-stat-val">${fmtTime(d.lastLap)}</div><div class="drawer-stat-lbl">Last Lap</div></div>
+    <div class="drawer-stat"><div class="drawer-stat-val">${fmtGap(d.gap)}</div><div class="drawer-stat-lbl">Gap to Lead</div></div>
+    <div class="drawer-stat"><div class="drawer-stat-val" style="color:${d.tire==='S'?'var(--red)':d.tire==='M'?'var(--yellow)':'#aaa'}">${d.tire} · ${d.tireAge}L</div><div class="drawer-stat-lbl">Tire / Age</div></div>
+    <div class="drawer-stat"><div class="drawer-stat-val">${d.pits}</div><div class="drawer-stat-lbl">Pit Stops</div></div>
+    <div class="drawer-stat"><div class="drawer-stat-val">${lapsLeft}</div><div class="drawer-stat-lbl">Laps Left</div></div>
+    <div class="drawer-stat"><div class="drawer-stat-val" style="color:var(--${d.drs?'green':'muted'})">${d.drs?'YES':'NO'}</div><div class="drawer-stat-lbl">DRS Active</div></div>
+  `;
+  // Lap canvas
+  drawDrawerLapCanvas(d);
+  drawDrawerGapCanvas(d);
+  // Recent laps list
+  const lapListEl = document.getElementById('drawerLapList');
+  const hist = lapHistory[d.code] || [];
+  lapListEl.innerHTML = '';
+  const recent = hist.slice(-10).reverse();
+  const minT = Math.min(...hist), maxT = Math.max(...hist);
+  recent.forEach((t, i) => {
+    const barPct = Math.max(10, Math.min(100, 100 - ((t - minT) / (maxT - minT + 0.001)) * 100));
+    const col = i === 0 ? 'var(--green)' : t < d.bestLap + 0.3 ? 'var(--green)' : t < d.bestLap + 0.8 ? 'var(--yellow)' : 'var(--text)';
+    lapListEl.innerHTML += `<div class="drawer-lap-item">
+      <span class="drawer-lap-num">-${i}</span>
+      <span class="drawer-lap-time" style="color:${col}">${fmtTime(t)}</span>
+      <div class="drawer-lap-bar" style="width:${barPct}px;background:${d.color};opacity:0.6"></div>
+    </div>`;
+  });
+  document.getElementById('driverDrawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('visible');
+}
+
+function drawDrawerLapCanvas(d) {
+  const canvas = document.getElementById('drawerLapCanvas');
+  if (!canvas.offsetWidth) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = 100 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const W = canvas.offsetWidth, H = 100;
+  ctx.clearRect(0, 0, W, H);
+  const hist = lapHistory[d.code] || [];
+  if (hist.length < 2) return;
+  const minT = Math.min(...hist) - 0.1, maxT = Math.max(...hist) + 0.1;
+  const pad = {l:8,r:8,t:8,b:8};
+  const W2 = W-pad.l-pad.r, H2 = H-pad.t-pad.b;
+  // grid
+  ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+  for(let g=0;g<3;g++){const y=pad.t+g/2*H2;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+W2,y);ctx.stroke();}
+  // line
+  ctx.beginPath();ctx.strokeStyle=d.color;ctx.lineWidth=2;ctx.lineJoin='round';
+  hist.forEach((t,i)=>{
+    const x=pad.l+(i/(hist.length-1))*W2;
+    const y=pad.t+((t-minT)/(maxT-minT))*H2;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  // fill under
+  ctx.lineTo(pad.l+W2, pad.t+H2); ctx.lineTo(pad.l, pad.t+H2); ctx.closePath();
+  ctx.fillStyle = d.color + '18'; ctx.fill();
+}
+
+function drawDrawerGapCanvas(d) {
+  const canvas = document.getElementById('drawerGapCanvas');
+  if (!canvas.offsetWidth) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = 80 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const W = canvas.offsetWidth, H = 80;
+  ctx.clearRect(0,0,W,H);
+  const hist = gapHistory[d.code] || [];
+  if (hist.length < 2) { ctx.fillStyle='rgba(255,255,255,0.15)';ctx.font='10px Share Tech Mono';ctx.fillText('No gap history',10,40);return; }
+  const minG = Math.min(...hist)-0.5, maxG = Math.max(...hist)+0.5;
+  const pad = {l:8,r:8,t:8,b:8};
+  const W2=W-pad.l-pad.r, H2=H-pad.t-pad.b;
+  ctx.beginPath();ctx.strokeStyle=d.color+'CC';ctx.lineWidth=1.5;ctx.lineJoin='round';
+  hist.forEach((g,i)=>{
+    const x=pad.l+(i/(hist.length-1))*W2;
+    const y=pad.t+((g-minG)/(maxG-minG||1))*H2;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+
+function closeDrawer() {
+  document.getElementById('driverDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('visible');
+  selectedDriverCode = null;
+}
+
+// ─── STRATEGY RECOMMENDER ──────────────────────────────────────────────────
+function renderStrategyRecommender() {
+  const sorted = [...drivers].sort((a,b) => a.pos - b.pos);
+  const lapsLeft = totalLaps - currentLap;
+  const recs = [];
+
+  sorted.slice(0,10).forEach(d => {
+    const tireLife = d.tire==='S'?22:d.tire==='M'?38:55;
+    const tireRemaining = tireLife - d.tireAge;
+    const aheadDriver = sorted.find(x => x.pos === d.pos - 1);
+    const behindDriver = sorted.find(x => x.pos === d.pos + 1);
+    const gapAhead = aheadDriver ? (d.gap - aheadDriver.gap) : Infinity;
+    const gapBehind = behindDriver ? (behindDriver.gap - d.gap) : Infinity;
+
+    let action, reason, badge;
+    if (tireRemaining < 5 && lapsLeft > 3) {
+      action = 'pit-now'; badge = 'PIT NOW';
+      reason = `${d.tire} tyre critical — ${d.tireAge}L on, only ~${tireRemaining}L left. Gap ahead ${gapAhead.toFixed(1)}s — box this lap.`;
+    } else if (tireRemaining < 12 && lapsLeft > 8 && gapBehind < 3) {
+      action = 'pit-now'; badge = 'PIT NOW';
+      reason = `Undercut threat from ${behindDriver?.code||'P'+(d.pos+1)} — gap only ${gapBehind.toFixed(1)}s. Pit first to cover.`;
+    } else if (tireRemaining > lapsLeft + 3) {
+      action = 'stay-out'; badge = 'STAY OUT';
+      reason = `Tyre good for ${tireRemaining}L, only ${lapsLeft}L left. No stop needed — hold position.`;
+    } else if (gapAhead < 1.5 && tireRemaining > 10 && lapsLeft > 12) {
+      action = 'monitor'; badge = 'OVERCUT?';
+      reason = `${gapAhead.toFixed(1)}s to ${aheadDriver?.code||'car ahead'} — stay out and overcut if they pit. Watch pace.`;
+    } else {
+      action = 'monitor'; badge = 'WATCH';
+      reason = `${tireRemaining}L tyre life left, ${lapsLeft}L to go. Pit window opens in ~${Math.max(1,tireRemaining-8)}L.`;
+    }
+    recs.push({d, action, reason, badge});
+  });
+
+  const container = document.getElementById('stratRecommendations');
+  const icons = {'pit-now':'🔴','stay-out':'🟢','monitor':'🟡'};
+  container.innerHTML = recs.map(r => `
+    <div class="strat-card ${r.action}">
+      <span class="strat-icon">${icons[r.action]}</span>
+      <div style="flex:1">
+        <div class="strat-driver" style="color:${r.d.color}">${r.d.code} <span style="color:var(--muted);font-weight:400;font-size:11px">P${r.d.pos}</span></div>
+        <div class="strat-rec">${r.reason}</div>
+      </div>
+      <span class="strat-badge ${r.action==='pit-now'?'pit':r.action==='stay-out'?'stay':'watch'}">${r.badge}</span>
+    </div>
+  `).join('');
+
+  // Undercut windows
+  const windowsEl = document.getElementById('stratWindows');
+  const undercutCandidates = sorted.filter(d => {
+    const ahead = sorted.find(x => x.pos === d.pos - 1);
+    return ahead && (d.gap - ahead.gap) < 4 && d.tireAge > 10;
+  }).slice(0,4);
+  if (!undercutCandidates.length) {
+    windowsEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--muted)">No active undercut windows detected</div>';
+  } else {
+    windowsEl.innerHTML = undercutCandidates.map(d => {
+      const ahead = sorted.find(x => x.pos === d.pos - 1);
+      const gap = (d.gap - ahead.gap).toFixed(3);
+      return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px">
+        <span style="color:${d.color}">${d.code}</span>
+        <span style="color:var(--muted)">→ undercut</span>
+        <span style="color:${ahead.color}">${ahead.code}</span>
+        <span style="color:var(--muted);margin-left:auto">+${gap}s gap</span>
+        <span style="color:var(--yellow);font-size:9px;padding:1px 6px;border:1px solid rgba(255,214,0,0.3)">VIABLE</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ─── DRIVER COMPARISON ─────────────────────────────────────────────────────
+function populateCompareSelects() {
+  const sorted = [...drivers].sort((a,b) => a.pos - b.pos);
+  ['compareA','compareB'].forEach((id, idx) => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = sorted.map((d,i) => `<option value="${d.code}" ${i===idx?'selected':''}>${d.code} — ${d.name}</option>`).join('');
+  });
+}
+
+function runComparison() {
+  const codeA = document.getElementById('compareA').value;
+  const codeB = document.getElementById('compareB').value;
+  if (codeA === codeB) { document.getElementById('compareResult').innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:11px;padding:12px 0">Select two different drivers</div>'; return; }
+  const a = drivers.find(d => d.code === codeA);
+  const b = drivers.find(d => d.code === codeB);
+  if (!a || !b) return;
+
+  const aHist = lapHistory[a.code] || [];
+  const bHist = lapHistory[b.code] || [];
+  const aAvg = aHist.length ? aHist.reduce((s,x)=>s+x,0)/aHist.length : a.lastLap;
+  const bAvg = bHist.length ? bHist.reduce((s,x)=>s+x,0)/bHist.length : b.lastLap;
+  const aTireScore = a.tire==='S'?Math.max(0,100-a.tireAge*4):a.tire==='M'?Math.max(0,100-a.tireAge*2.5):Math.max(0,100-a.tireAge*1.5);
+  const bTireScore = b.tire==='S'?Math.max(0,100-b.tireAge*4):b.tire==='M'?Math.max(0,100-b.tireAge*2.5):Math.max(0,100-b.tireAge*1.5);
+
+  const rows = [
+    ['Position', `P${a.pos}`, `P${b.pos}`, a.pos < b.pos ? 'a' : a.pos > b.pos ? 'b' : ''],
+    ['Best Lap', fmtTime(a.bestLap), fmtTime(b.bestLap), a.bestLap < b.bestLap ? 'a' : 'b'],
+    ['Last Lap', fmtTime(a.lastLap), fmtTime(b.lastLap), a.lastLap < b.lastLap ? 'a' : 'b'],
+    ['Avg Lap', fmtTime(+aAvg.toFixed(3)), fmtTime(+bAvg.toFixed(3)), aAvg < bAvg ? 'a' : 'b'],
+    ['Tire', `${a.tire}:${a.tireAge}L`, `${b.tire}:${b.tireAge}L`, ''],
+    ['Tire Health', `${aTireScore.toFixed(0)}%`, `${bTireScore.toFixed(0)}%`, aTireScore > bTireScore ? 'a' : 'b'],
+    ['Pit Stops', `${a.pits}`, `${b.pits}`, ''],
+    ['Gap to Lead', fmtGap(a.gap), fmtGap(b.gap), a.gap < b.gap ? 'a' : a.gap > b.gap ? 'b' : ''],
+    ['DRS', a.drs?'✓':'—', b.drs?'✓':'—', ''],
+  ];
+
+  const tableRows = rows.map(([label, av, bv, winner]) => `
+    <tr>
+      <td>${label}</td>
+      <td class="${winner==='a'?'compare-win':''}" style="${winner==='a'?'color:'+a.color:''}">${av}</td>
+      <td class="${winner==='b'?'compare-win':''}" style="${winner==='b'?'color:'+b.color:''}">${bv}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('compareResult').innerHTML = `
+    <table class="compare-stat-table">
+      <thead><tr>
+        <th style="text-align:left">METRIC</th>
+        <th style="color:${a.color}">${a.code}</th>
+        <th style="color:${b.color}">${b.code}</th>
+      </tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <div class="panel-title" style="margin-top:12px">Lap Time Comparison</div>
+    <canvas class="compare-canvas" id="compareCanvas" height="120"></canvas>
+  `;
+  setTimeout(() => drawCompareCanvas(a, b), 50);
+}
+
+function drawCompareCanvas(a, b) {
+  const canvas = document.getElementById('compareCanvas');
+  if (!canvas || !canvas.offsetWidth) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = 120 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const W = canvas.offsetWidth, H = 120;
+  ctx.clearRect(0,0,W,H);
+  const aHist = lapHistory[a.code]||[], bHist = lapHistory[b.code]||[];
+  const all = [...aHist,...bHist];
+  if (all.length < 2) return;
+  const minT = Math.min(...all)-0.2, maxT = Math.max(...all)+0.2;
+  const pad={l:8,r:8,t:10,b:20};
+  const W2=W-pad.l-pad.r, H2=H-pad.t-pad.b;
+  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
+  for(let g=0;g<4;g++){const y=pad.t+g/3*H2;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+W2,y);ctx.stroke();}
+  [[a,aHist],[b,bHist]].forEach(([d,hist])=>{
+    if(!hist.length)return;
+    ctx.beginPath();ctx.strokeStyle=d.color;ctx.lineWidth=2;ctx.lineJoin='round';
+    hist.forEach((t,i)=>{
+      const x=pad.l+(i/(hist.length-1||1))*W2;
+      const y=pad.t+((t-minT)/(maxT-minT||1))*H2;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.fillStyle=d.color;ctx.font='9px Share Tech Mono';
+    ctx.fillText(d.code, pad.l+W2-20, pad.t+((hist[hist.length-1]-minT)/(maxT-minT||1))*H2-4);
+  });
+}
+
+// ─── RACE REPLAY ───────────────────────────────────────────────────────────
+let replayMode = false;
+let replaySnapshot = {};
+
+function scrubReplay(lap) {
+  document.getElementById('replayLapNum').textContent = lap;
+  const intLap = parseInt(lap);
+  if (intLap === currentLap && !replayMode) return;
+  if (!replayMode) enterReplayMode();
+  // Reconstruct approximate state at lap N
+  drivers.forEach(d => {
+    const hist = lapHistory[d.code] || [];
+    const idx = Math.min(hist.length - 1, Math.max(0, intLap - (currentLap - hist.length)));
+    if (hist[idx]) d.lastLap = hist[idx];
+    // Approximate gap (scale linearly)
+    if (d.pos > 1) d.gap = Math.max(0, d.gap * (intLap / currentLap) + (Math.random()-0.5)*0.5);
+  });
+  renderTower();
+  renderIntervals();
+}
+
+function enterReplayMode() {
+  replayMode = true;
+  replaySnapshot = drivers.map(d => ({...d}));
+  document.getElementById('replayBadge').classList.add('active');
+  document.getElementById('exitReplayBtn').style.display = 'inline';
+  if (simRunning) { simRunning = false; document.getElementById('btnRunning').textContent = '▶ Resume'; document.getElementById('btnRunning').classList.remove('active'); }
+}
+
+function exitReplay() {
+  replayMode = false;
+  document.getElementById('replayBadge').classList.remove('active');
+  document.getElementById('exitReplayBtn').style.display = 'none';
+  document.getElementById('replaySlider').value = currentLap;
+  document.getElementById('replayLapNum').textContent = currentLap;
+  renderAll();
+}
+
+
 
 </script>
 </body>

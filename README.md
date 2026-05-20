@@ -110,7 +110,7 @@ The AI race engineer tab connects to Claude via a secure serverless proxy, givin
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/yourusername/pitwall-f1
+git clone https://github.com/Sanss25/f1-intelligence-dashboard
 cd pitwall-f1
 
 # Python pipeline deps

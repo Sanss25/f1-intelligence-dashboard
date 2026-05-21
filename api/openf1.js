@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     const isLive = now >= sessionStart && now <= new Date(sessionEnd.getTime() + 4 * 3600 * 1000);
 
     // ── 2. Fetch all data in parallel ─────────────────────────────────────
-    const [positions, laps, stints, pit, weather, raceControl, driversRaw] = await Promise.allSettled([
+    const [positions, laps, stints, pit, weatherResponse, raceControl, driversRaw] = await Promise.allSettled([
       fetchJSON(`${OPENF1}/position?session_key=${sessionKey}`),
       fetchJSON(`${OPENF1}/laps?session_key=${sessionKey}`),
       fetchJSON(`${OPENF1}/stints?session_key=${sessionKey}`),
@@ -88,7 +88,7 @@ export default async function handler(req, res) {
     const lapData  = laps.status === 'fulfilled'     ? laps.value        : [];
     const stintData = stints.status === 'fulfilled'  ? stints.value      : [];
     const pitData   = pit.status === 'fulfilled'     ? pit.value         : [];
-    const wxData    = weather.status === 'fulfilled' ? weather.value     : [];
+    const wxData = weatherResponse.status === 'fulfilled' ? weatherResponse.value : [];
     const rcData    = raceControl.status === 'fulfilled' ? raceControl.value : [];
     const driversData = driversRaw.status === 'fulfilled' ? driversRaw.value : [];
 

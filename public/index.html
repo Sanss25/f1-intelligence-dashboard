@@ -334,7 +334,7 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
 [data-tip]:hover::after{opacity:1}
 
 /* ── KEYBOARD SHORTCUT HINT ── */
-.kbd-hint{position:fixed;bottom:52px;right:14px;background:var(--surface2);border:1px solid var(--border2);padding:10px 14px;font-family:var(--mono);font-size:10px;color:var(--muted);z-index:500;display:none;line-height:1.8;letter-spacing:0.05em}
+.kbd-hint-legacy{display:none}
 .kbd-hint.visible{display:block}
 .kbd-hint-title{color:var(--text);margin-bottom:4px;font-size:9px;letter-spacing:0.15em}
 kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 5px;border-radius:2px;color:var(--text);font-size:9px}
@@ -465,7 +465,7 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
 .ai-agent-badge:hover{background:rgba(155,89,182,0.25);border-color:rgba(155,89,182,0.6)}
 
 /* ── KEYBOARD HINT IMPROVED ── */
-.kbd-hint{position:fixed;bottom:80px;right:14px;background:var(--surface2);border:1px solid var(--border2);padding:12px 16px;font-family:var(--mono);font-size:10px;color:var(--muted);z-index:600;display:none;line-height:2;letter-spacing:0.05em;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.kbd-hint{position:fixed;top:auto;left:auto;background:var(--surface2);border:1px solid var(--border2);padding:12px 16px;font-family:var(--mono);font-size:10px;color:var(--muted);z-index:600;display:none;line-height:2;letter-spacing:0.05em;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
 .kbd-hint.visible{display:block}
 .kbd-hint-title{color:var(--text);margin-bottom:8px;font-size:10px;letter-spacing:0.12em;border-bottom:1px solid var(--border2);padding-bottom:6px}
 .kbd-section{color:var(--yellow);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;margin-top:8px;margin-bottom:2px}
@@ -482,7 +482,7 @@ kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 6px;b
 
 <header>
   <div class="header-left">
-    <div class="logo">🏎 PIT<span>WALL</span></div>
+    <div class="logo"><span style="color:var(--red);filter:drop-shadow(0 0 4px rgba(232,0,61,0.6))">🏎</span> PIT<span>WALL</span></div>
     <div class="race-info">
       <div class="race-name">🇦🇺 Australian Grand Prix</div>
       <div class="race-sub">Albert Park Circuit · Round 1 of 24 · 2026</div>
@@ -514,7 +514,25 @@ kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 6px;b
   <button class="ctrl-btn" onclick="triggerRandomPit()">Force Pit</button>
   <button class="ctrl-btn" onclick="cycleFlag()">Cycle Flag</button>
   <button class="ctrl-btn" onclick="resetRace()">↺ Reset</button>
-  <button class="ctrl-btn" onclick="document.getElementById('kbdHint').classList.toggle('visible')" title="Keyboard shortcuts">⌨ SHORTCUTS</button>
+  <div style="position:relative;display:inline-block" id="shortcutsWrap">
+    <button class="ctrl-btn" onclick="toggleKbdHint()" title="Keyboard shortcuts">⌨ SHORTCUTS</button>
+    <div class="kbd-hint" id="kbdHint" style="position:absolute;top:calc(100% + 8px);left:0;bottom:auto;right:auto;min-width:240px;z-index:9000">
+      <div class="kbd-hint-title">🏎 PIT WALL — KEYBOARD SHORTCUTS</div>
+      <div class="kbd-section">SIMULATION</div>
+      <div><kbd>Space</kbd> Pause / Resume</div>
+      <div><kbd>R</kbd> Reset Race</div>
+      <div><kbd>P</kbd> Force Pit Stop</div>
+      <div class="kbd-section">FLAGS</div>
+      <div><kbd>S</kbd> Deploy Safety Car</div>
+      <div><kbd>V</kbd> Virtual Safety Car</div>
+      <div><kbd>F</kbd> Cycle Flag</div>
+      <div class="kbd-section">INTERFACE</div>
+      <div><kbd>T</kbd> Collapse Tower</div>
+      <div><kbd>A</kbd> Toggle AI Agent</div>
+      <div><kbd>?</kbd> Toggle this panel</div>
+      <div class="kbd-footer">🤖 AI Race Engineer — powered by Claude</div>
+    </div>
+  </div>
   <div class="ctrl-sep"></div>
   <button class="ctrl-btn" id="btnLivePoll" onclick="toggleLivePoll(this)" style="color:var(--green);border-color:rgba(0,200,83,0.4)">◉ LIVE DATA ON</button>
   <span class="speed-lbl">Sim Speed</span>
@@ -886,23 +904,6 @@ kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 6px;b
   </div>
 </div>
 
-<!-- KEYBOARD HINT -->
-<div class="kbd-hint" id="kbdHint">
-  <div class="kbd-hint-title">🏎 PIT WALL — KEYBOARD SHORTCUTS</div>
-  <div class="kbd-section">SIMULATION</div>
-  <div><kbd>Space</kbd> Pause / Resume</div>
-  <div><kbd>R</kbd> Reset Race</div>
-  <div><kbd>P</kbd> Force Pit Stop</div>
-  <div class="kbd-section">FLAGS</div>
-  <div><kbd>S</kbd> Deploy Safety Car</div>
-  <div><kbd>V</kbd> Virtual Safety Car</div>
-  <div><kbd>F</kbd> Cycle Flag</div>
-  <div class="kbd-section">INTERFACE</div>
-  <div><kbd>T</kbd> Collapse Tower</div>
-  <div><kbd>A</kbd> Toggle AI Agent</div>
-  <div><kbd>?</kbd> Toggle this panel</div>
-  <div class="kbd-footer">🤖 AI Race Engineer — powered by Claude</div>
-</div>
 
 </div>
 

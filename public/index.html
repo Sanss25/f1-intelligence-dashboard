@@ -473,6 +473,50 @@ kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 6px;b
 /* ── CREDIT ── */
 .credit{font-family:var(--mono);font-size:9px;color:var(--muted2);letter-spacing:0.14em;padding-left:16px;border-left:1px solid var(--border);white-space:nowrap;flex-shrink:0}
 .credit b{color:var(--red)}
+
+/* ── RACE PICKER MODAL ── */
+.race-picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.race-picker-overlay.hidden{display:none}
+.race-picker{background:var(--surface);border:1px solid var(--border2);width:min(860px,96vw);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,0.7)}
+.rp-header{display:flex;align-items:center;gap:14px;padding:18px 24px;border-bottom:1px solid var(--border2);flex-shrink:0}
+.rp-logo{font-weight:900;font-size:20px;letter-spacing:0.08em;text-transform:uppercase}
+.rp-logo span{color:var(--red)}
+.rp-subtitle{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase}
+.rp-close{margin-left:auto;background:none;border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:10px;padding:5px 12px;cursor:pointer;transition:all 0.15s;letter-spacing:0.08em}
+.rp-close:hover{color:var(--text);border-color:var(--border2)}
+.rp-body{flex:1;overflow-y:auto;padding:24px}
+.rp-body::-webkit-scrollbar{width:4px}
+.rp-body::-webkit-scrollbar-thumb{background:var(--muted2)}
+.rp-section-label{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px;margin-top:20px;display:flex;align-items:center;gap:8px}
+.rp-section-label:first-child{margin-top:0}
+.rp-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.rp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.race-card{background:var(--surface2);border:1px solid var(--border);padding:14px 16px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.race-card:hover{border-color:var(--border2);background:var(--surface3)}
+.race-card.selected{border-color:var(--yellow);background:rgba(255,214,0,0.06)}
+.race-card.loaded{border-color:rgba(0,200,83,0.4);background:rgba(0,200,83,0.04)}
+.rc-flag{font-size:20px;margin-bottom:8px;display:block}
+.rc-name{font-weight:700;font-size:13px;letter-spacing:0.04em;margin-bottom:3px}
+.rc-circuit{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.06em;margin-bottom:8px}
+.rc-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rc-badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border:1px solid;letter-spacing:0.06em;border-radius:2px}
+.rc-badge.year{color:var(--blue);border-color:rgba(77,166,255,0.35);background:rgba(77,166,255,0.08)}
+.rc-badge.winner{color:var(--yellow);border-color:rgba(255,214,0,0.3);background:rgba(255,214,0,0.06)}
+.rc-badge.laps{color:var(--muted);border-color:var(--border);background:transparent}
+.rc-badge.status-live{color:var(--green);border-color:rgba(0,200,83,0.4);background:rgba(0,200,83,0.08)}
+.rc-badge.status-pre{color:var(--red);border-color:rgba(232,0,61,0.3);background:var(--red-dim)}
+.rp-footer{padding:16px 24px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--surface2)}
+.rp-load-btn{padding:10px 28px;background:var(--red);border:none;color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:background 0.15s;font-weight:600}
+.rp-load-btn:hover{background:#C8002E}
+.rp-load-btn:disabled{background:var(--muted2);cursor:not-allowed}
+.rp-selected-label{font-family:var(--mono);font-size:10px;color:var(--muted);flex:1}
+.rp-selected-label span{color:var(--text)}
+.rp-loading-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--yellow);transition:width 0.4s ease;width:0}
+
+/* Race picker trigger button */
+.race-picker-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;transition:opacity 0.15s;background:none;border:1px solid var(--border2);padding:4px 12px;font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase}
+.race-picker-trigger:hover{color:var(--text);border-color:rgba(255,255,255,0.25)}
+.race-picker-trigger .rpt-flag{font-size:14px}
 </style>
 </head>
 <body>
@@ -500,7 +544,11 @@ kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 6px;b
       <div class="lbl">Air Temp</div>
     </div>
     <div class="live-badge"><div class="live-dot"></div>LIVE SIM</div>
-
+    <button class="race-picker-trigger" onclick="openRacePicker()" id="racePickerTrigger">
+      <span class="rpt-flag" id="rptFlag">🇦🇺</span>
+      <span id="rptName">AUS 2026</span>
+      <span>▾</span>
+    </button>
     <div id="dataBadge" style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.1em;max-width:180px;text-align:right;line-height:1.3">◌ Loading data...</div>
   </div>
 </header>
@@ -903,6 +951,228 @@ kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 6px;b
 </div>
 
 
+</div>
+
+<!-- RACE PICKER MODAL -->
+<div class="race-picker-overlay hidden" id="racePickerOverlay" onclick="handleOverlayClick(event)">
+  <div class="race-picker" id="racePickerModal">
+    <div class="rp-header">
+      <div>
+        <div class="rp-logo">PIT<span>WALL</span></div>
+        <div class="rp-subtitle">Select a Pre-Loaded Race Session</div>
+      </div>
+      <button class="rp-close" onclick="closeRacePicker()">✕ CLOSE</button>
+    </div>
+    <div class="rp-body">
+
+      <div class="rp-section-label">2026 Season</div>
+      <div class="rp-grid">
+        <div class="race-card" data-key="aus_2026" onclick="selectRace(this)">
+          <span class="rc-flag">🇦🇺</span>
+          <div class="rc-name">Australian GP</div>
+          <div class="rc-circuit">Albert Park · Melbourne</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2026</span>
+            <span class="rc-badge winner">VER</span>
+            <span class="rc-badge laps">58 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-aus_2026"></div>
+        </div>
+        <div class="race-card" data-key="bah_2026" onclick="selectRace(this)">
+          <span class="rc-flag">🇧🇭</span>
+          <div class="rc-name">Bahrain GP</div>
+          <div class="rc-circuit">Bahrain International Circuit</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2026</span>
+            <span class="rc-badge winner">HAM</span>
+            <span class="rc-badge laps">57 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-bah_2026"></div>
+        </div>
+        <div class="race-card" data-key="mon_2026" onclick="selectRace(this)">
+          <span class="rc-flag">🇲🇨</span>
+          <div class="rc-name">Monaco GP</div>
+          <div class="rc-circuit">Circuit de Monaco</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2026</span>
+            <span class="rc-badge winner">LEC</span>
+            <span class="rc-badge laps">78 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-mon_2026"></div>
+        </div>
+      </div>
+
+      <div class="rp-section-label">2025 Classics</div>
+      <div class="rp-grid">
+        <div class="race-card" data-key="spa_2025" onclick="selectRace(this)">
+          <span class="rc-flag">🇧🇪</span>
+          <div class="rc-name">Belgian GP</div>
+          <div class="rc-circuit">Circuit de Spa-Francorchamps</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2025</span>
+            <span class="rc-badge winner">NOR</span>
+            <span class="rc-badge laps">44 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-spa_2025"></div>
+        </div>
+        <div class="race-card" data-key="mon_2025" onclick="selectRace(this)">
+          <span class="rc-flag">🇲🇨</span>
+          <div class="rc-name">Monaco GP</div>
+          <div class="rc-circuit">Circuit de Monaco</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2025</span>
+            <span class="rc-badge winner">LEC</span>
+            <span class="rc-badge laps">78 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-mon_2025"></div>
+        </div>
+        <div class="race-card" data-key="sil_2025" onclick="selectRace(this)">
+          <span class="rc-flag">🇬🇧</span>
+          <div class="rc-name">British GP</div>
+          <div class="rc-circuit">Silverstone Circuit</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2025</span>
+            <span class="rc-badge winner">HAM</span>
+            <span class="rc-badge laps">52 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-sil_2025"></div>
+        </div>
+      </div>
+
+      <div class="rp-section-label">Historic Battles</div>
+      <div class="rp-grid">
+        <div class="race-card" data-key="ita_2021" onclick="selectRace(this)">
+          <span class="rc-flag">🇮🇹</span>
+          <div class="rc-name">Italian GP</div>
+          <div class="rc-circuit">Autodromo di Monza</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2021</span>
+            <span class="rc-badge winner">RIC</span>
+            <span class="rc-badge laps">53 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-ita_2021"></div>
+        </div>
+        <div class="race-card" data-key="bra_2022" onclick="selectRace(this)">
+          <span class="rc-flag">🇧🇷</span>
+          <div class="rc-name">Brazilian GP</div>
+          <div class="rc-circuit">Autódromo José Carlos Pace</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2022</span>
+            <span class="rc-badge winner">VER</span>
+            <span class="rc-badge laps">71 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-bra_2022"></div>
+        </div>
+        <div class="race-card" data-key="lv_2023" onclick="selectRace(this)">
+          <span class="rc-flag">🇺🇸</span>
+          <div class="rc-name">Las Vegas GP</div>
+          <div class="rc-circuit">Las Vegas Street Circuit</div>
+          <div class="rc-meta">
+            <span class="rc-badge year">2023</span>
+            <span class="rc-badge winner">VER</span>
+            <span class="rc-badge laps">50 Laps</span>
+          </div>
+          <div class="rp-loading-bar" id="lb-lv_2023"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="rp-footer">
+      <div class="rp-selected-label">Selected: <span id="rpSelectedName">Australian GP 2026</span></div>
+      <button class="rp-load-btn" id="rpLoadBtn" onclick="loadSelectedRace()">▶ LOAD SESSION</button>
+    </div>
+  </div>
+</div>
+
+<!-- RACE PICKER MODAL -->
+<div class="race-picker-overlay hidden" id="racePickerOverlay" onclick="handleOverlayClick(event)">
+  <div class="race-picker" id="racePickerModal">
+    <div class="rp-header">
+      <div>
+        <div class="rp-logo">PIT<span>WALL</span></div>
+        <div class="rp-subtitle">Select a Pre-Loaded Race Session</div>
+      </div>
+      <button class="rp-close" onclick="closeRacePicker()">&#10005; CLOSE</button>
+    </div>
+    <div class="rp-body">
+      <div class="rp-section-label">2026 Season</div>
+      <div class="rp-grid">
+        <div class="race-card selected" data-key="aus_2026" onclick="selectRace(this)">
+          <span class="rc-flag">&#127462;&#127482;</span>
+          <div class="rc-name">Australian GP</div>
+          <div class="rc-circuit">Albert Park &middot; Melbourne</div>
+          <div class="rc-meta"><span class="rc-badge year">2026</span><span class="rc-badge winner">VER</span><span class="rc-badge laps">58 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-aus_2026"></div>
+        </div>
+        <div class="race-card" data-key="bah_2026" onclick="selectRace(this)">
+          <span class="rc-flag">&#127463;&#127469;</span>
+          <div class="rc-name">Bahrain GP</div>
+          <div class="rc-circuit">Bahrain International Circuit</div>
+          <div class="rc-meta"><span class="rc-badge year">2026</span><span class="rc-badge winner">HAM</span><span class="rc-badge laps">57 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-bah_2026"></div>
+        </div>
+        <div class="race-card" data-key="mon_2026" onclick="selectRace(this)">
+          <span class="rc-flag">&#127474;&#127464;</span>
+          <div class="rc-name">Monaco GP</div>
+          <div class="rc-circuit">Circuit de Monaco</div>
+          <div class="rc-meta"><span class="rc-badge year">2026</span><span class="rc-badge winner">LEC</span><span class="rc-badge laps">78 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-mon_2026"></div>
+        </div>
+      </div>
+      <div class="rp-section-label">2025 Classics</div>
+      <div class="rp-grid">
+        <div class="race-card" data-key="spa_2025" onclick="selectRace(this)">
+          <span class="rc-flag">&#127463;&#127466;</span>
+          <div class="rc-name">Belgian GP</div>
+          <div class="rc-circuit">Spa-Francorchamps</div>
+          <div class="rc-meta"><span class="rc-badge year">2025</span><span class="rc-badge winner">NOR</span><span class="rc-badge laps">44 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-spa_2025"></div>
+        </div>
+        <div class="race-card" data-key="mon_2025" onclick="selectRace(this)">
+          <span class="rc-flag">&#127474;&#127464;</span>
+          <div class="rc-name">Monaco GP</div>
+          <div class="rc-circuit">Circuit de Monaco</div>
+          <div class="rc-meta"><span class="rc-badge year">2025</span><span class="rc-badge winner">LEC</span><span class="rc-badge laps">78 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-mon_2025"></div>
+        </div>
+        <div class="race-card" data-key="sil_2025" onclick="selectRace(this)">
+          <span class="rc-flag">&#127468;&#127463;</span>
+          <div class="rc-name">British GP</div>
+          <div class="rc-circuit">Silverstone Circuit</div>
+          <div class="rc-meta"><span class="rc-badge year">2025</span><span class="rc-badge winner">HAM</span><span class="rc-badge laps">52 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-sil_2025"></div>
+        </div>
+      </div>
+      <div class="rp-section-label">Historic Battles</div>
+      <div class="rp-grid">
+        <div class="race-card" data-key="ita_2021" onclick="selectRace(this)">
+          <span class="rc-flag">&#127470;&#127481;</span>
+          <div class="rc-name">Italian GP</div>
+          <div class="rc-circuit">Autodromo di Monza</div>
+          <div class="rc-meta"><span class="rc-badge year">2021</span><span class="rc-badge winner">RIC</span><span class="rc-badge laps">53 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-ita_2021"></div>
+        </div>
+        <div class="race-card" data-key="bra_2022" onclick="selectRace(this)">
+          <span class="rc-flag">&#127463;&#127479;</span>
+          <div class="rc-name">Brazilian GP</div>
+          <div class="rc-circuit">Interlagos</div>
+          <div class="rc-meta"><span class="rc-badge year">2022</span><span class="rc-badge winner">VER</span><span class="rc-badge laps">71 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-bra_2022"></div>
+        </div>
+        <div class="race-card" data-key="lv_2023" onclick="selectRace(this)">
+          <span class="rc-flag">&#127482;&#127480;</span>
+          <div class="rc-name">Las Vegas GP</div>
+          <div class="rc-circuit">Las Vegas Strip Circuit</div>
+          <div class="rc-meta"><span class="rc-badge year">2023</span><span class="rc-badge winner">VER</span><span class="rc-badge laps">50 Laps</span></div>
+          <div class="rp-loading-bar" id="lb-lv_2023"></div>
+        </div>
+      </div>
+    </div>
+    <div class="rp-footer">
+      <div class="rp-selected-label">Selected: <span id="rpSelectedName">Australian GP 2026</span></div>
+      <button class="rp-load-btn" id="rpLoadBtn" onclick="loadSelectedRace()">&#9654; LOAD SESSION</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1804,6 +2074,129 @@ function renderHistoricalChart(){
 
 // Load real FastF1 data if available, otherwise use sim fallback
 loadRealData();
+
+// ─── RACE PICKER (Option A) ─────────────────────────────────────────────────
+const RACE_PRESETS = {
+  aus_2026:{flag:'🇦🇺',name:'Australian GP',circuit:'Albert Park',year:2026,round:1,laps:58,currentLap:42,trackTemp:47,airTemp:28,winner:'VER',fastLap:'HAM',notes:'VER leads on aged mediums. HAM on fresh softs closing 0.3s/lap.'},
+  bah_2026:{flag:'🇧🇭',name:'Bahrain GP',circuit:'Bahrain International Circuit',year:2026,round:2,laps:57,currentLap:38,trackTemp:34,airTemp:26,winner:'HAM',fastLap:'VER',notes:'HAM leads after stunning undercut. VER P2 closing after VSC free stop.'},
+  mon_2026:{flag:'🇲🇨',name:'Monaco GP',circuit:'Circuit de Monaco',year:2026,round:8,laps:78,currentLap:55,trackTemp:42,airTemp:24,winner:'LEC',fastLap:'NOR',notes:'LEC commanding from pole. NOR 3.4s back — no overtakes possible.'},
+  spa_2025:{flag:'🇧🇪',name:'Belgian GP',circuit:'Spa-Francorchamps',year:2025,round:13,laps:44,currentLap:30,trackTemp:28,airTemp:19,winner:'NOR',fastLap:'PIA',notes:'NOR & PIA 1-2 for McLaren. HAM SC beneficiary now P3.'},
+  mon_2025:{flag:'🇲🇨',name:'Monaco GP',circuit:'Circuit de Monaco',year:2025,round:8,laps:78,currentLap:60,trackTemp:44,airTemp:23,winner:'LEC',fastLap:'SAI',notes:'LEC perfect in Monaco again. SAI trying overcut P2.'},
+  sil_2025:{flag:'🇬🇧',name:'British GP',circuit:'Silverstone Circuit',year:2025,round:12,laps:52,currentLap:40,trackTemp:38,airTemp:22,winner:'HAM',fastLap:'RUS',notes:'Home crowd roaring. HAM vs RUS intra-team battle.'},
+  ita_2021:{flag:'🇮🇹',name:'Italian GP',circuit:'Autodromo di Monza',year:2021,round:14,laps:53,currentLap:45,trackTemp:36,airTemp:25,winner:'RIC',fastLap:'NOR',notes:"McLaren 1-2! RIC & NOR stunning result. Monza 360km/h top speeds."},
+  bra_2022:{flag:'🇧🇷',name:'Brazilian GP',circuit:'Interlagos',year:2022,round:21,laps:71,currentLap:52,trackTemp:33,airTemp:27,winner:'VER',fastLap:'VER',notes:'VER dominant despite grid penalty. HAM storming P6→P2 in 20 laps.'},
+  lv_2023:{flag:'🇺🇸',name:'Las Vegas GP',circuit:'Las Vegas Strip Circuit',year:2023,round:21,laps:50,currentLap:35,trackTemp:18,airTemp:12,winner:'VER',fastLap:'LEC',notes:'Cold tyres causing chaos. LEC fastest lap on final push. 2am local.'},
+};
+
+const SESSION_DRIVERS = {
+  ita_2021:['VER','HAM','RIC','NOR','SAI','LEC','PER','ALO','GAS','STR','VET','OCO','TSU','RAI','GIO','MSC','LAT','RUS','MAZ','KUB'],
+  bra_2022:['VER','LEC','HAM','PER','SAI','RUS','MCL','ALO','BOT','STR','NOR','ZHO','OCO','GAS','TSU','ALB','MSC','MAZ','LAT','DEV'],
+  lv_2023: ['VER','ALO','LEC','PIA','SAI','NOR','HAM','RUS','STR','PER','HUL','BOT','OCO','GAS','TSU','ALB','ZHO','MAG','LAW','SAR'],
+};
+
+const CIRCUIT_PROFILES = {
+  aus_2026:{baseGap:1.4,gapMult:1.0,baseLap:81.5},
+  bah_2026:{baseGap:1.8,gapMult:1.1,baseLap:93.2},
+  mon_2026:{baseGap:0.8,gapMult:0.6,baseLap:74.5},
+  spa_2025:{baseGap:2.2,gapMult:1.4,baseLap:107.0},
+  mon_2025:{baseGap:0.9,gapMult:0.65,baseLap:74.8},
+  sil_2025:{baseGap:1.6,gapMult:1.05,baseLap:88.5},
+  ita_2021:{baseGap:1.2,gapMult:0.9,baseLap:82.0},
+  bra_2022:{baseGap:1.5,gapMult:1.0,baseLap:71.0},
+  lv_2023: {baseGap:1.7,gapMult:1.1,baseLap:97.5},
+};
+
+let selectedRaceKey = 'aus_2026';
+
+function openRacePicker(){
+  document.getElementById('racePickerOverlay').classList.remove('hidden');
+  document.querySelectorAll('.race-card').forEach(c=>c.classList.toggle('selected',c.dataset.key===selectedRaceKey));
+}
+function closeRacePicker(){document.getElementById('racePickerOverlay').classList.add('hidden')}
+function handleOverlayClick(e){if(e.target===document.getElementById('racePickerOverlay'))closeRacePicker()}
+
+function selectRace(card){
+  document.querySelectorAll('.race-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedRaceKey=card.dataset.key;
+  const p=RACE_PRESETS[selectedRaceKey];
+  document.getElementById('rpSelectedName').textContent=`${p.flag} ${p.name} ${p.year}`;
+}
+
+async function loadSelectedRace(){
+  const key=selectedRaceKey;
+  const preset=RACE_PRESETS[key];
+  if(!preset)return;
+  const btn=document.getElementById('rpLoadBtn');
+  btn.disabled=true;btn.textContent='⏳ Loading...';
+  const bar=document.getElementById('lb-'+key);
+  if(bar)bar.style.width='30%';
+  clearInterval(simInterval);simRunning=false;
+  let loaded=false;
+  try{
+    const res=await fetch(`/data/${key}.json`);
+    if(res.ok){
+      if(bar)bar.style.width='70%';
+      const data=await res.json();
+      DRIVERS_INIT=data.drivers.map(d=>({...d,inPit:false,justExited:false,posChange:0}));
+      drivers=DRIVERS_INIT.map(d=>({...d}));
+      pitLog=data.pitLog||[];lapHistory=data.lapHistory||{};gapHistory=data.gapHistory||{};
+      realTelemetry=data.telemetry||{};realSectorTimes=data.sectorTimes||{};
+      currentLap=data.meta?.currentLap||preset.currentLap;totalLaps=data.meta?.totalLaps||preset.laps;
+      loaded=true;usingRealData=true;
+    }
+  }catch(e){}
+  if(!loaded)_buildSimFromPreset(preset,key);
+  // Update header
+  document.querySelector('.race-name').textContent=`${preset.flag} ${preset.name}`;
+  document.querySelector('.race-sub').textContent=`${preset.circuit} · Round ${preset.round} of 24 · ${preset.year}`;
+  document.getElementById('lapCurrent').textContent=currentLap;
+  document.getElementById('rptFlag').textContent=preset.flag;
+  document.getElementById('rptName').textContent=`${preset.circuit.split(' ')[0].slice(0,3).toUpperCase()} ${preset.year}`;
+  document.getElementById('trackTempVal').textContent=preset.trackTemp+'°C';
+  document.getElementById('airTempVal').textContent=preset.airTemp+'°C';
+  const slider=document.getElementById('replaySlider');
+  if(slider){slider.max=totalLaps;slider.value=currentLap;}
+  document.getElementById('replayLapNum').textContent=currentLap;
+  const badge=document.getElementById('dataBadge');
+  if(badge){badge.textContent=loaded?`● REAL — ${preset.flag} ${preset.name} ${preset.year}`:`◌ SIM — ${preset.flag} ${preset.name} ${preset.year}`;badge.style.color=loaded?'var(--green)':'var(--muted)';}
+  updateTicker(`LOADED ${preset.flag} ${preset.name} ${preset.year} — ${preset.notes}`);
+  document.querySelectorAll('.race-card').forEach(c=>c.classList.remove('loaded'));
+  const activeCard=document.querySelector(`.race-card[data-key="${key}"]`);
+  if(activeCard)activeCard.classList.add('loaded');
+  if(bar)bar.style.width='100%';
+  setTimeout(()=>{if(bar)bar.style.width='0%';},800);
+  simRunning=true;tickCount=0;flagState='green';updateFlag();
+  drivers.forEach(d=>{
+    if(!lapHistory[d.code]||!lapHistory[d.code].length)lapHistory[d.code]=Array.from({length:20},()=>d.bestLap+(Math.random()-0.5)*1.8);
+    if(!gapHistory[d.code]||!gapHistory[d.code].length)gapHistory[d.code]=Array.from({length:15},(_,i)=>Math.max(0,d.gap-(15-i)*0.05*(Math.random()*2)));
+  });
+  document.getElementById('btnRunning').textContent='⏸ Pause';
+  document.getElementById('btnRunning').classList.add('active');
+  simInterval=setInterval(simTick,600);
+  renderAll();
+  btn.disabled=false;btn.textContent='▶ LOAD SESSION';
+  closeRacePicker();
+}
+
+function _buildSimFromPreset(preset,key){
+  const profile=CIRCUIT_PROFILES[key]||{baseGap:1.5,gapMult:1.0,baseLap:85.0};
+  const customCodes=SESSION_DRIVERS[key];
+  const baseDrivers=DRIVERS_FALLBACK.map((d,i)=>{
+    const code=customCodes?(customCodes[i]||d.code):d.code;
+    const lapVar=i*0.28;
+    const gapVal=i===0?0:parseFloat((i*profile.baseGap*profile.gapMult*(0.8+Math.random()*0.4)).toFixed(3));
+    return{...d,code,name:customCodes?code:d.name,lastLap:parseFloat((profile.baseLap+lapVar+(Math.random()-0.5)*0.6).toFixed(3)),bestLap:parseFloat((profile.baseLap+lapVar*0.7+(Math.random()-0.5)*0.3).toFixed(3)),gap:gapVal,tireAge:Math.max(1,Math.floor(Math.random()*22)),tire:['S','M','H'][Math.floor(Math.random()*3)],pits:Math.floor(Math.random()*2)+1,inPit:false,justExited:false,posChange:0};
+  });
+  DRIVERS_INIT=baseDrivers;drivers=baseDrivers.map(d=>({...d}));
+  currentLap=preset.currentLap;totalLaps=preset.laps;pitLog=[];lapHistory={};gapHistory={};usingRealData=false;
+  drivers.slice(0,8).forEach(d=>{
+    if(d.pits>=1){
+      const stopLap=Math.floor(preset.currentLap*0.4+Math.random()*10);
+      pitLog.push({lap:stopLap,code:d.code,color:d.color,from:'S',to:d.tire,duration:2.2+Math.random()*1.6});
+    }
+  });
+}
 
 // ─── OPENF1 LIVE POLLING ───────────────────────────────────────────────────
 let livePolling = null;

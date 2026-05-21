@@ -76,7 +76,7 @@ Currently loaded with real data from the **🇧🇷 São Paulo Grand Prix 2024**
 - Tire strategy overview (full stint timeline)
 
 ### 💬 AI Race Engineer
-- Floating 🤖 button (bottom-right) — accessible from any tab without leaving the current view
+- Floating 🎙️ microphone button (bottom-right) — accessible from any tab without leaving the current view
 - Also accessible via `AI AGENT` badge in the header
 - Full conversation with live race context injected every message (lap, gaps, tires, flag state)
 - Conversation history maintained across turns (last 10 messages)
@@ -150,7 +150,7 @@ The dashboard uses a **top navigation bar** with 10 tabs:
 | Data Viz | 🗂️ | Sector pace + gap evolution + strategy |
 | Data Hub | 📦 | Datasets, resources, constructor wins |
 
-AI Race Engineer is accessible via the floating **🤖** button (bottom-right) from any tab.
+AI Race Engineer is accessible via the floating **🎙️** microphone button (bottom-right) from any tab.
 
 ---
 

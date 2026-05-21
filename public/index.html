@@ -66,7 +66,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .app-wrapper{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 .content-grid{flex:1;display:flex;flex-direction:column;overflow:hidden}
 /* MAIN AREA below top-nav */
-.main-area{flex:1;display:grid;grid-template-columns:420px 1fr;overflow:hidden}
+.main-area{flex:1;display:grid;grid-template-columns:520px 6px 1fr;overflow:hidden;position:relative}
 
 /* CTRL BAR */
 .ctrl-bar{display:flex;gap:10px;padding:8px 12px;background:var(--surface2);border-bottom:1px solid var(--border);align-items:center;flex-shrink:0}
@@ -84,7 +84,10 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .drs-zone-badge.closed{border-color:var(--border2);color:var(--muted)}
 
 /* TOWER */
-.tower-panel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border2)}
+.resize-divider{width:6px;cursor:col-resize;background:var(--border2);flex-shrink:0;position:relative;z-index:50;transition:background 0.15s}
+.resize-divider:hover,.resize-divider.dragging{background:var(--yellow);box-shadow:0 0 8px rgba(255,214,0,0.35)}
+.resize-divider::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:40px;background:rgba(255,255,255,0.25);border-radius:2px}
+.tower-panel{display:flex;flex-direction:column;overflow:hidden;min-width:280px}
 .tower-col-headers{display:grid;grid-template-columns:32px 42px 56px 1fr 60px 60px 70px 68px 52px 64px;padding:7px 12px;background:var(--surface2);border-bottom:1px solid var(--border2)}
 .col-h{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;text-align:center}
 .col-h.left{text-align:left}
@@ -458,9 +461,8 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
 #tab-datahub .panel-grid-3{margin-bottom:16px}
 
 /* ── CREDIT ── */
-.credit{position:fixed;bottom:52px;left:12px;font-family:var(--mono);font-size:9px;color:var(--muted2);letter-spacing:0.12em;z-index:100;pointer-events:none;transition:color 0.2s}
-.credit:hover{color:var(--muted);pointer-events:all}
-.credit span{color:var(--red);font-size:10px}
+.credit{font-family:var(--mono);font-size:9px;color:var(--muted2);letter-spacing:0.14em;padding-left:16px;border-left:1px solid var(--border);white-space:nowrap;flex-shrink:0}
+.credit b{color:var(--red)}
 </style>
 </head>
 <body>
@@ -514,24 +516,8 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
 
 <div class="content-grid" id="contentGrid">
 
-  <!-- TOP NAV -->
-  <nav class="top-nav">
-    <button class="top-nav-btn active" onclick="switchTab('intervals',this)"><span class="nav-icon">📊</span>Intervals</button>
-    <button class="top-nav-btn" onclick="switchTab('fastest',this)"><span class="nav-icon">⚡</span>Fastest</button>
-    <button class="top-nav-btn" onclick="switchTab('pitstops',this)"><span class="nav-icon">🔧</span>Pit Stops</button>
-    <button class="top-nav-btn" onclick="switchTab('laptimes',this)"><span class="nav-icon">📈</span>Lap Times</button>
-    <div class="top-nav-sep"></div>
-    <button class="top-nav-btn" onclick="switchTab('strategy',this)"><span class="nav-icon">🎯</span>Strategy</button>
-    <button class="top-nav-btn" onclick="switchTab('predict',this)"><span class="nav-icon">🔮</span>Predict</button>
-    <button class="top-nav-btn" onclick="switchTab('compare',this)"><span class="nav-icon">⚖️</span>Compare</button>
-    <div class="top-nav-sep"></div>
-    <button class="top-nav-btn" onclick="switchTab('telemetry',this)"><span class="nav-icon">📡</span>Telemetry</button>
-    <button class="top-nav-btn" onclick="switchTab('dataviz',this)"><span class="nav-icon">🗂️</span>Data Viz</button>
-    <button class="top-nav-btn" onclick="switchTab('datahub',this)"><span class="nav-icon">📦</span>Data Hub</button>
-  </nav>
-
-  <!-- MAIN AREA: Tower (fixed left) + Panel (full remaining width) -->
-  <div class="main-area">
+  <!-- MAIN AREA -->
+  <div class="main-area" id="mainArea">
 
   <!-- TIMING TOWER -->
   <div class="tower-panel" id="towerPanel">
@@ -550,9 +536,25 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
     <div class="tower-rows" id="towerRows"></div>
   </div>
 
+  <!-- RESIZE DIVIDER -->
+  <div class="resize-divider" id="resizeDivider"></div>
+
   <!-- RIGHT PANEL -->
   <div class="right-panel">
-
+    <nav class="top-nav">
+      <button class="top-nav-btn active" onclick="switchTab('intervals',this)"><span class="nav-icon">📊</span>Intervals</button>
+      <button class="top-nav-btn" onclick="switchTab('fastest',this)"><span class="nav-icon">⚡</span>Fastest</button>
+      <button class="top-nav-btn" onclick="switchTab('pitstops',this)"><span class="nav-icon">🔧</span>Pit Stops</button>
+      <button class="top-nav-btn" onclick="switchTab('laptimes',this)"><span class="nav-icon">📈</span>Lap Times</button>
+      <div class="top-nav-sep"></div>
+      <button class="top-nav-btn" onclick="switchTab('strategy',this)"><span class="nav-icon">🎯</span>Strategy</button>
+      <button class="top-nav-btn" onclick="switchTab('predict',this)"><span class="nav-icon">🔮</span>Predict</button>
+      <button class="top-nav-btn" onclick="switchTab('compare',this)"><span class="nav-icon">⚖️</span>Compare</button>
+      <div class="top-nav-sep"></div>
+      <button class="top-nav-btn" onclick="switchTab('telemetry',this)"><span class="nav-icon">📡</span>Telemetry</button>
+      <button class="top-nav-btn" onclick="switchTab('dataviz',this)"><span class="nav-icon">🗂️</span>Data Viz</button>
+      <button class="top-nav-btn" onclick="switchTab('datahub',this)"><span class="nav-icon">📦</span>Data Hub</button>
+    </nav>
     <div class="panel-content">
 
       <!-- INTERVALS -->
@@ -791,7 +793,7 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
   </div>
   <div class="message-ticker">
     <div class="ticker-text" id="tickerText">LEWIS HAMILTON SETS FASTEST LAP — 1:21.456 · VER closes to within 1.2s · PIT WINDOW OPEN laps 40-48 · Track temp rising to 47°C · DRS enabled all zones</div>
-  </div>
+    <div class="credit">BY <b>SANSKRUTI</b></div>
 </div>
 
 <!-- REPLAY BAR -->
@@ -1945,26 +1947,28 @@ function collapseToggle() {
   }
 }
 
-// ─── RESIZABLE PANEL ───────────────────────────────────────────────────────
+// ─── RESIZABLE DIVIDER ─────────────────────────────────────────────────────
 (function() {
-  const handle = document.getElementById('resizeHandle');
-  const grid = document.getElementById('contentGrid');
-  let dragging = false, startX = 0, startRight = 360;
+  const handle = document.getElementById('resizeDivider');
+  const mainArea = document.getElementById('mainArea');
+  if (!handle || !mainArea) return;
+  let dragging = false, startX = 0, startLeft = 520;
   handle.addEventListener('mousedown', e => {
-    dragging = true; startX = e.clientX;
-    const cols = getComputedStyle(grid).gridTemplateColumns.split(' ');
-    startRight = parseFloat(cols[cols.length - 1]) || 360;
+    dragging = true;
+    startX = e.clientX;
+    startLeft = parseFloat(getComputedStyle(mainArea).gridTemplateColumns.split(' ')[0]) || 520;
     handle.classList.add('dragging');
     document.body.style.cursor = 'col-resize';
     document.body.style.userSelect = 'none';
+    e.preventDefault();
   });
   document.addEventListener('mousemove', e => {
     if (!dragging) return;
-    const delta = startX - e.clientX;
-    const newRight = Math.max(260, Math.min(600, startRight + delta));
-    grid.style.gridTemplateColumns = `1fr 5px ${newRight}px`;
+    const newLeft = Math.max(300, Math.min(820, startLeft + (e.clientX - startX)));
+    mainArea.style.gridTemplateColumns = `${newLeft}px 6px 1fr`;
   });
   document.addEventListener('mouseup', () => {
+    if (!dragging) return;
     dragging = false;
     handle.classList.remove('dragging');
     document.body.style.cursor = '';
@@ -2278,8 +2282,5 @@ function exitReplay() {
 
 
 </script>
-
-<!-- CREDIT -->
-<div class="credit">BY <span>✦</span> SANSKRUTI</div>
 </body>
 </html>

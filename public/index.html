@@ -66,7 +66,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .app-wrapper{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 .content-grid{flex:1;display:flex;flex-direction:column;overflow:hidden}
 /* MAIN AREA below top-nav */
-.main-area{flex:1;display:grid;grid-template-columns:420px 1fr;overflow:hidden}
+.main-area{flex:1;display:grid;grid-template-columns:520px 6px 1fr;overflow:hidden;position:relative}
 
 /* CTRL BAR */
 .ctrl-bar{display:flex;gap:10px;padding:8px 12px;background:var(--surface2);border-bottom:1px solid var(--border);align-items:center;flex-shrink:0}
@@ -84,7 +84,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .drs-zone-badge.closed{border-color:var(--border2);color:var(--muted)}
 
 /* TOWER */
-.tower-panel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border2)}
+.tower-panel{display:flex;flex-direction:column;overflow:hidden;min-width:280px}
 .tower-col-headers{display:grid;grid-template-columns:32px 42px 56px 1fr 60px 60px 70px 68px 52px 64px;padding:7px 12px;background:var(--surface2);border-bottom:1px solid var(--border2)}
 .col-h{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;text-align:center}
 .col-h.left{text-align:left}
@@ -337,7 +337,7 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
 kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 5px;border-radius:2px;color:var(--text);font-size:9px}
 
 /* ── COLLAPSIBLE TOWER ── */
-.tower-panel{transition:min-width 0.25s ease}
+.resize-divider{width:6px;cursor:col-resize;background:var(--border2);flex-shrink:0;position:relative;z-index:50;transition:background 0.15s}.resize-divider:hover,.resize-divider.dragging{background:var(--yellow);box-shadow:0 0 8px rgba(255,214,0,0.4)}.resize-divider::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:40px;background:rgba(255,255,255,0.2);border-radius:2px}.tower-panel{transition:none}
 .tower-panel.collapsed{min-width:0!important;width:0!important;overflow:hidden;border:none}
 .tower-toggle{position:absolute;left:0;top:50%;transform:translateY(-50%);width:16px;height:48px;background:var(--surface2);border:1px solid var(--border2);border-left:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:100;color:var(--muted);font-size:10px;transition:color 0.15s}
 .tower-toggle:hover{color:var(--text)}
@@ -544,6 +544,9 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
     </div>
     <div class="tower-rows" id="towerRows"></div>
   </div>
+
+  <!-- RESIZE DIVIDER -->
+  <div class="resize-divider" id="resizeDivider"></div>
 
   <!-- RIGHT PANEL -->
   <div class="right-panel">
@@ -1940,31 +1943,56 @@ function collapseToggle() {
   }
 }
 
-// ─── RESIZABLE PANEL ───────────────────────────────────────────────────────
+// ─── RESIZABLE DIVIDER ─────────────────────────────────────────────────────
 (function() {
-  const handle = document.getElementById('resizeHandle');
-  const grid = document.getElementById('contentGrid');
-  let dragging = false, startX = 0, startRight = 360;
+  const handle = document.getElementById('resizeDivider');
+  const mainArea = document.querySelector('.main-area');
+  if (!handle || !mainArea) return;
+  let dragging = false, startX = 0, startLeft = 520;
+
   handle.addEventListener('mousedown', e => {
-    dragging = true; startX = e.clientX;
-    const cols = getComputedStyle(grid).gridTemplateColumns.split(' ');
-    startRight = parseFloat(cols[cols.length - 1]) || 360;
+    dragging = true;
+    startX = e.clientX;
+    const cols = getComputedStyle(mainArea).gridTemplateColumns.split(' ');
+    startLeft = parseFloat(cols[0]) || 520;
     handle.classList.add('dragging');
     document.body.style.cursor = 'col-resize';
     document.body.style.userSelect = 'none';
+    e.preventDefault();
   });
+
   document.addEventListener('mousemove', e => {
     if (!dragging) return;
-    const delta = startX - e.clientX;
-    const newRight = Math.max(260, Math.min(600, startRight + delta));
-    grid.style.gridTemplateColumns = `1fr 5px ${newRight}px`;
+    const delta = e.clientX - startX;
+    const newLeft = Math.max(300, Math.min(800, startLeft + delta));
+    mainArea.style.gridTemplateColumns = `${newLeft}px 6px 1fr`;
+    // also update the tower col headers to match
+    const towerPanel = document.getElementById('towerPanel');
+    if (towerPanel) towerPanel.style.width = newLeft + 'px';
   });
+
   document.addEventListener('mouseup', () => {
+    if (!dragging) return;
     dragging = false;
     handle.classList.remove('dragging');
     document.body.style.cursor = '';
     document.body.style.userSelect = '';
   });
+
+  // Touch support
+  handle.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    dragging = true; startX = t.clientX;
+    const cols = getComputedStyle(mainArea).gridTemplateColumns.split(' ');
+    startLeft = parseFloat(cols[0]) || 520;
+  }, {passive:true});
+  document.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const delta = e.touches[0].clientX - startX;
+    const newLeft = Math.max(300, Math.min(800, startLeft + delta));
+    mainArea.style.gridTemplateColumns = `${newLeft}px 6px 1fr`;
+  }, {passive:true});
+  document.addEventListener('touchend', () => { dragging = false; });
 })();
 
 // ─── DRIVER DETAIL DRAWER ──────────────────────────────────────────────────

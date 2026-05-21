@@ -64,7 +64,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 
 /* APP WRAPPER */
 .app-wrapper{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.content-grid{flex:1;display:grid;grid-template-columns:1fr 5px 360px;overflow:hidden}
+.content-grid{flex:1;display:flex;flex-direction:column;overflow:hidden}
+/* MAIN AREA below top-nav */
+.main-area{flex:1;display:grid;grid-template-columns:420px 1fr;overflow:hidden}
 
 /* CTRL BAR */
 .ctrl-bar{display:flex;gap:10px;padding:8px 12px;background:var(--surface2);border-bottom:1px solid var(--border);align-items:center;flex-shrink:0}
@@ -82,7 +84,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .drs-zone-badge.closed{border-color:var(--border2);color:var(--muted)}
 
 /* TOWER */
-.tower-panel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)}
+.tower-panel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border2)}
 .tower-col-headers{display:grid;grid-template-columns:32px 42px 56px 1fr 60px 60px 70px 68px 52px 64px;padding:7px 12px;background:var(--surface2);border-bottom:1px solid var(--border2)}
 .col-h{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;text-align:center}
 .col-h.left{text-align:left}
@@ -135,17 +137,30 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .drs-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.08em;padding:2px 5px;border:1px solid rgba(0,200,83,0.4);color:var(--green);background:var(--green-dim)}
 
 /* RIGHT PANEL */
+/* TOP NAV */
+.top-nav{display:flex;align-items:center;background:var(--surface2);border-bottom:2px solid var(--border2);flex-shrink:0;overflow-x:auto;padding:0 4px}
+.top-nav::-webkit-scrollbar{height:0}
+.top-nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:11px 18px;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color 0.15s,border-color 0.15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.top-nav-btn:hover{color:var(--text)}
+.top-nav-btn.active{color:var(--yellow);border-bottom-color:var(--yellow);background:rgba(255,214,0,0.03)}
+.top-nav-btn .nav-icon{font-size:13px}
+.top-nav-sep{width:1px;height:24px;background:var(--border2);margin:0 4px;flex-shrink:0}
+
+/* RIGHT / MAIN PANEL */
 .right-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--surface)}
-.panel-tab-bar{display:flex;border-bottom:1px solid var(--border2);flex-shrink:0;overflow-x:auto}
-.panel-tab-bar::-webkit-scrollbar{height:0}
-.ptab{flex:1;min-width:60px;padding:10px 4px;font-family:var(--mono);font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap}
-.ptab:hover{color:var(--text)}
-.ptab.active{color:var(--yellow);border-bottom-color:var(--yellow)}
-.panel-content{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px}
-.panel-content::-webkit-scrollbar{width:3px}
+.panel-content{flex:1;overflow-y:auto;overflow-x:hidden;padding:24px}
+.panel-content::-webkit-scrollbar{width:4px}
 .panel-content::-webkit-scrollbar-thumb{background:var(--muted2)}
 .panel-section{display:none}
 .panel-section.active{display:block}
+
+/* GRID LAYOUTS FOR FULL-WIDTH PANELS */
+.panel-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.panel-grid-half{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.panel-card{background:var(--surface2);border:1px solid var(--border);padding:18px;border-radius:2px}
+.panel-card-title{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.panel-card-title::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* INTERVALS */
 .panel-title{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px}
@@ -304,7 +319,7 @@ canvas.viz-canvas{width:100%;display:block;border:1px solid var(--border)}
 .dh-pillar-desc{font-family:var(--mono);font-size:9px;color:var(--muted);line-height:1.4}
 
 @media(max-width:900px){
-  .content-grid{grid-template-columns:1fr}
+  .main-area{grid-template-columns:1fr}
   .right-panel{display:none}
   .tower-col-headers,.driver-row{grid-template-columns:32px 36px 48px 1fr 58px 58px 64px 0 0 0}
   .cell:nth-child(8),.cell:nth-child(9),.cell:nth-child(10){display:none}
@@ -393,7 +408,54 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
 .replay-mode-badge.active{display:inline}
 
 /* ── ACTIVE TAB IMPROVEMENT ── */
-.ptab.active{color:var(--yellow);border-bottom-color:var(--yellow);background:rgba(255,214,0,0.04);font-weight:600}
+.top-nav-btn.active{color:var(--yellow);border-bottom-color:var(--yellow);background:rgba(255,214,0,0.04);font-weight:600}
+
+/* ── FLOATING AI CHAT BUBBLE ── */
+.chat-bubble-btn{position:fixed;bottom:72px;right:20px;width:52px;height:52px;border-radius:50%;background:rgba(155,89,182,0.9);border:2px solid rgba(155,89,182,0.6);color:#fff;font-size:20px;cursor:pointer;z-index:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(155,89,182,0.4);transition:transform 0.2s,box-shadow 0.2s}
+.chat-bubble-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(155,89,182,0.6)}
+.chat-bubble-btn .bubble-badge{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--red);font-family:var(--mono);font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;display:none}
+.chat-bubble-btn .bubble-badge.has-msg{display:flex}
+
+.chat-float{position:fixed;bottom:134px;right:20px;width:420px;height:520px;background:var(--surface);border:1px solid rgba(155,89,182,0.3);box-shadow:0 8px 40px rgba(0,0,0,0.5);z-index:800;display:flex;flex-direction:column;border-radius:4px;transform:scale(0.95) translateY(10px);opacity:0;pointer-events:none;transition:all 0.2s cubic-bezier(0.4,0,0.2,1)}
+.chat-float.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.chat-float-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border-bottom:1px solid var(--border2);border-radius:4px 4px 0 0;flex-shrink:0}
+.chat-float-title{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;color:var(--purple);flex:1}
+.chat-float-close{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:2px 6px;transition:color 0.15s}
+.chat-float-close:hover{color:var(--text)}
+.chat-float-body{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:12px}
+.chat-messages{flex:1;overflow-y:auto;padding-bottom:8px}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--muted2)}
+.chat-msg{display:flex;gap:8px;margin-bottom:10px;animation:msgIn 0.25s ease-out}
+.chat-msg.user{flex-direction:row-reverse}
+.msg-avatar{width:26px;height:26px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;flex-shrink:0;letter-spacing:0.05em}
+.msg-avatar.ai-av{background:rgba(155,89,182,0.2);border:1px solid rgba(155,89,182,0.3);color:var(--purple)}
+.msg-avatar.user-av{background:rgba(255,214,0,0.1);border:1px solid rgba(255,214,0,0.2);color:var(--yellow)}
+.msg-bubble{max-width:82%;padding:8px 11px;border-radius:2px;font-size:12px;line-height:1.55}
+.chat-msg.ai .msg-bubble{background:var(--surface2);border:1px solid var(--border2);color:var(--text)}
+.chat-msg.user .msg-bubble{background:rgba(255,214,0,0.08);border:1px solid rgba(255,214,0,0.15);color:var(--text)}
+.chat-suggestions{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.chat-sug{font-family:var(--mono);font-size:9px;padding:3px 7px;border:1px solid var(--border2);color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;border-radius:2px}
+.chat-sug:hover{color:var(--text);border-color:rgba(155,89,182,0.4)}
+.chat-input-row{display:flex;gap:8px;margin-top:8px;flex-shrink:0}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:8px 10px;outline:none;resize:none;letter-spacing:0.02em;border-radius:2px}
+.chat-input:focus{border-color:rgba(155,89,182,0.4)}
+.chat-send{padding:8px 14px;background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.35);color:var(--purple);font-family:var(--mono);font-size:10px;letter-spacing:0.1em;cursor:pointer;transition:all 0.15s;white-space:nowrap;border-radius:2px}
+.chat-send:hover{background:rgba(155,89,182,0.25)}
+.chat-send:disabled{opacity:0.4;cursor:not-allowed}
+.typing-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted);animation:typingBounce 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+
+/* ── PANEL TITLE FIX ── */
+.panel-title{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px}
+
+/* ── COMPARE RESULT GRID ── */
+#compareResult .panel-grid-2{margin-top:0}
+
+/* ── DATA HUB FULL WIDTH ── */
+#tab-datahub .panel-grid-3{margin-bottom:16px}
 </style>
 </head>
 <body>
@@ -447,6 +509,25 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
 
 <div class="content-grid" id="contentGrid">
 
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <button class="top-nav-btn active" onclick="switchTab('intervals',this)"><span class="nav-icon">📊</span>Intervals</button>
+    <button class="top-nav-btn" onclick="switchTab('fastest',this)"><span class="nav-icon">⚡</span>Fastest</button>
+    <button class="top-nav-btn" onclick="switchTab('pitstops',this)"><span class="nav-icon">🔧</span>Pit Stops</button>
+    <button class="top-nav-btn" onclick="switchTab('laptimes',this)"><span class="nav-icon">📈</span>Lap Times</button>
+    <div class="top-nav-sep"></div>
+    <button class="top-nav-btn" onclick="switchTab('strategy',this)"><span class="nav-icon">🎯</span>Strategy</button>
+    <button class="top-nav-btn" onclick="switchTab('predict',this)"><span class="nav-icon">🔮</span>Predict</button>
+    <button class="top-nav-btn" onclick="switchTab('compare',this)"><span class="nav-icon">⚖️</span>Compare</button>
+    <div class="top-nav-sep"></div>
+    <button class="top-nav-btn" onclick="switchTab('telemetry',this)"><span class="nav-icon">📡</span>Telemetry</button>
+    <button class="top-nav-btn" onclick="switchTab('dataviz',this)"><span class="nav-icon">🗂️</span>Data Viz</button>
+    <button class="top-nav-btn" onclick="switchTab('datahub',this)"><span class="nav-icon">📦</span>Data Hub</button>
+  </nav>
+
+  <!-- MAIN AREA: Tower (fixed left) + Panel (full remaining width) -->
+  <div class="main-area">
+
   <!-- TIMING TOWER -->
   <div class="tower-panel" id="towerPanel">
     <div class="tower-col-headers">
@@ -464,95 +545,130 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
     <div class="tower-rows" id="towerRows"></div>
   </div>
 
-  <!-- RESIZE HANDLE -->
-  <div class="resize-handle" id="resizeHandle"></div>
-
   <!-- RIGHT PANEL -->
   <div class="right-panel">
-    <div class="panel-tab-bar">
-      <button class="ptab active" onclick="switchTab('intervals',this)">Intervals</button>
-      <button class="ptab" onclick="switchTab('fastest',this)">Fastest</button>
-      <button class="ptab" onclick="switchTab('pitstops',this)">Pit Stops</button>
-      <button class="ptab" onclick="switchTab('laptimes',this)">Lap Times</button>
-      <button class="ptab" onclick="switchTab('dataviz',this)">Data Viz</button>
-      <button class="ptab" onclick="switchTab('predict',this)">Predict</button>
-      <button class="ptab" onclick="switchTab('strategy',this)">Strategy</button>
-      <button class="ptab" onclick="switchTab('compare',this)">Compare</button>
-      <button class="ptab" onclick="switchTab('telemetry',this)">Telemetry</button>
-      <button class="ptab" onclick="switchTab('engineer',this)">AI Eng</button>
-      <button class="ptab" onclick="switchTab('datahub',this)">Data Hub</button>
-    </div>
 
     <div class="panel-content">
 
       <!-- INTERVALS -->
       <div class="panel-section active" id="tab-intervals">
-        <div class="panel-title">Gap to Leader (seconds)</div>
-        <div id="intervalBars"></div>
+        <div class="panel-grid-2">
+          <div class="panel-card">
+            <div class="panel-card-title">Gap to Leader (seconds)</div>
+            <div id="intervalBars"></div>
+          </div>
+          <div class="panel-card">
+            <div class="panel-card-title">Session Fastest Laps</div>
+            <div id="fastestLapsList"></div>
+          </div>
+        </div>
       </div>
 
       <!-- FASTEST -->
       <div class="panel-section" id="tab-fastest">
-        <div class="panel-title">Session Fastest Laps</div>
-        <div id="fastestLapsList"></div>
+        <div class="panel-card">
+          <div class="panel-card-title">Session Fastest Laps — Full Classification</div>
+          <div id="fastestLapsList2"></div>
+        </div>
       </div>
 
       <!-- PIT STOPS -->
       <div class="panel-section" id="tab-pitstops">
-        <div class="panel-title">Pit Stop Log</div>
-        <div id="pitStopLog"></div>
+        <div class="panel-grid-half">
+          <div class="panel-card">
+            <div class="panel-card-title">Pit Stop Log</div>
+            <div id="pitStopLog"></div>
+          </div>
+          <div>
+            <div class="panel-card" style="margin-bottom:16px">
+              <div class="panel-card-title">Tire Strategy Overview</div>
+              <div id="strategyViz2"></div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-card-title">Stop Duration Distribution</div>
+              <canvas id="pitDurationChart" style="width:100%;height:120px;display:block"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- LAP TIMES -->
       <div class="panel-section" id="tab-laptimes">
-        <div class="panel-title">Lap Time Evolution — Top 5</div>
-        <canvas id="lapChart"></canvas>
-        <div id="lapChartLegend"></div>
+        <div class="panel-card" style="margin-bottom:16px">
+          <div class="panel-card-title">Lap Time Evolution — Top 5 Drivers</div>
+          <canvas id="lapChart" style="width:100%;height:260px;display:block"></canvas>
+          <div id="lapChartLegend" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px 16px"></div>
+        </div>
+        <div class="panel-grid-2">
+          <div class="panel-card">
+            <div class="panel-card-title">Gap Evolution (Last 15 Laps)</div>
+            <canvas class="viz-canvas" id="gapChart" style="height:180px"></canvas>
+          </div>
+          <div class="panel-card">
+            <div class="panel-card-title">Pace Distribution (Sector Analysis)</div>
+            <canvas class="viz-canvas" id="paceChart" style="height:180px"></canvas>
+            <div class="pace-legend" id="paceLegend" style="margin-top:8px"></div>
+          </div>
+        </div>
       </div>
 
       <!-- DATA VIZ (Part 2) -->
       <div class="panel-section" id="tab-dataviz">
-        <div class="viz-section">
-          <div class="viz-chart-title">Pace Distribution (Sector Analysis)</div>
-          <canvas class="viz-canvas" id="paceChart" height="160"></canvas>
-          <div class="pace-legend" id="paceLegend"></div>
-
-          <div class="viz-chart-title">Tire Strategy Overview</div>
+        <div class="panel-grid-2" style="margin-bottom:16px">
+          <div class="panel-card">
+            <div class="panel-card-title">Pace Distribution — Sector Analysis</div>
+            <canvas class="viz-canvas" id="paceChartViz" style="height:200px"></canvas>
+            <div class="pace-legend" id="paceLegendViz" style="margin-top:8px"></div>
+          </div>
+          <div class="panel-card">
+            <div class="panel-card-title">Gap Evolution — Last 15 Laps</div>
+            <canvas class="viz-canvas" id="gapChartViz" style="height:200px"></canvas>
+          </div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-card-title">Tire Strategy Overview — Top 10</div>
           <div id="strategyViz"></div>
-
-          <div class="viz-chart-title">Gap Evolution (Last 15 Laps)</div>
-          <canvas class="viz-canvas" id="gapChart" height="150"></canvas>
         </div>
       </div>
 
       <!-- ML PREDICTOR (Part 3) -->
       <div class="panel-section" id="tab-predict">
-        <div class="ml-section">
-          <div class="ml-header">
-            <div class="panel-title">Win Probability Model</div>
-            <div class="ml-subtitle">Ensemble model · Gap, tire deg, pace trend, pit stops, DRS, SC risk · Updated each lap</div>
+        <div class="panel-grid-half">
+          <div>
+            <div class="panel-card" style="margin-bottom:16px">
+              <div class="panel-card-title">🔮 Win Probability Model</div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Ensemble model · Gap, tire deg, pace trend, pit stops, DRS, SC risk</div>
+              <div id="mlPredictions"><div class="ml-loading"><span class="ml-pulse">■</span> Computing model...</div></div>
+              <button class="ml-refresh-btn" onclick="runMLModel()" style="margin-top:14px">↻ Recompute Model</button>
+            </div>
           </div>
-          <div id="mlPredictions"><div class="ml-loading"><span class="ml-pulse">■</span> Computing model...</div></div>
-          <div class="ml-features" id="mlFeatures" style="display:none">
-            <div class="ml-features-title">Key Model Features</div>
-            <div class="ml-feat-row"><span class="ml-feat-label">Current gap to leader</span><span class="ml-feat-value" id="feat-gap">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-gap-bar" style="width:70%"></div></div></div>
-            <div class="ml-feat-row"><span class="ml-feat-label">Tire age (laps)</span><span class="ml-feat-value" id="feat-tire">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-tire-bar" style="width:50%"></div></div></div>
-            <div class="ml-feat-row"><span class="ml-feat-label">Lap time trend</span><span class="ml-feat-value" id="feat-trend">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-trend-bar" style="width:60%"></div></div></div>
-            <div class="ml-feat-row"><span class="ml-feat-label">Estimated pit stops left</span><span class="ml-feat-value" id="feat-pits">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-pits-bar" style="width:40%"></div></div></div>
-            <div class="ml-feat-row"><span class="ml-feat-label">DRS eligible laps</span><span class="ml-feat-value" id="feat-drs">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-drs-bar" style="width:80%"></div></div></div>
+          <div>
+            <div class="panel-card">
+              <div class="panel-card-title">Key Model Features — Race Leader</div>
+              <div class="ml-features" id="mlFeatures">
+                <div class="ml-feat-row"><span class="ml-feat-label">Current gap to leader</span><span class="ml-feat-value" id="feat-gap">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-gap-bar" style="width:70%"></div></div></div>
+                <div class="ml-feat-row"><span class="ml-feat-label">Tire age (laps)</span><span class="ml-feat-value" id="feat-tire">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-tire-bar" style="width:50%"></div></div></div>
+                <div class="ml-feat-row"><span class="ml-feat-label">Lap time trend</span><span class="ml-feat-value" id="feat-trend">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-trend-bar" style="width:60%"></div></div></div>
+                <div class="ml-feat-row"><span class="ml-feat-label">Estimated pit stops left</span><span class="ml-feat-value" id="feat-pits">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-pits-bar" style="width:40%"></div></div></div>
+                <div class="ml-feat-row"><span class="ml-feat-label">DRS eligible laps</span><span class="ml-feat-value" id="feat-drs">—</span><div class="ml-feat-bar"><div class="ml-feat-fill" id="feat-drs-bar" style="width:80%"></div></div></div>
+              </div>
+            </div>
           </div>
-          <button class="ml-refresh-btn" onclick="runMLModel()">↻ Recompute Model</button>
         </div>
       </div>
 
       <!-- TELEMETRY -->
       <div class="panel-section" id="tab-telemetry">
-        <div class="panel-title">Live Telemetry — Top 6 Drivers</div>
-        <div id="telemetryList"></div>
-        <div style="margin-top:14px">
-          <div class="panel-title">Tire Degradation Model</div>
-          <canvas class="viz-canvas" id="degradCanvas" height="130"></canvas>
-          <div class="pace-legend" id="degradLegend" style="margin-top:8px"></div>
+        <div class="panel-grid-half">
+          <div class="panel-card">
+            <div class="panel-card-title">📡 Live Telemetry — Top 6 Drivers</div>
+            <div id="telemetryList"></div>
+          </div>
+          <div class="panel-card">
+            <div class="panel-card-title">Tire Degradation Model</div>
+            <canvas class="viz-canvas" id="degradCanvas" style="height:200px"></canvas>
+            <div class="pace-legend" id="degradLegend" style="margin-top:10px"></div>
+          </div>
         </div>
       </div>
 
@@ -619,59 +735,46 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
 
       <!-- STRATEGY RECOMMENDER -->
       <div class="panel-section" id="tab-strategy">
-        <div class="strat-rec-panel">
-          <div class="strat-rec-title">⚡ Live Strategy Recommender</div>
-          <div id="stratRecommendations"><div class="ml-loading"><span class="ml-pulse">■</span> Analysing race state...</div></div>
-        </div>
-        <div style="margin-top:10px">
-          <div class="panel-title">Undercut / Overcut Windows</div>
-          <div id="stratWindows"></div>
+        <div class="panel-grid-half">
+          <div class="panel-card">
+            <div class="panel-card-title">⚡ Live Strategy Recommender</div>
+            <div id="stratRecommendations"><div class="ml-loading"><span class="ml-pulse">■</span> Analysing race state...</div></div>
+          </div>
+          <div>
+            <div class="panel-card" style="margin-bottom:16px">
+              <div class="panel-card-title">Undercut / Overcut Windows</div>
+              <div id="stratWindows"></div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-card-title">Tire Strategy Overview</div>
+              <div id="strategyVizStrat"></div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- DRIVER COMPARISON -->
       <div class="panel-section" id="tab-compare">
-        <div class="compare-panel">
-          <div class="panel-title">Driver Head-to-Head</div>
-          <div class="compare-select-row">
+        <div class="panel-card" style="margin-bottom:16px">
+          <div class="panel-card-title">⚖️ Driver Head-to-Head Comparison</div>
+          <div class="compare-select-row" style="margin-bottom:0">
             <select class="compare-select" id="compareA"></select>
-            <span style="font-family:var(--mono);font-size:12px;color:var(--muted)">vs</span>
+            <span style="font-family:var(--mono);font-size:14px;color:var(--muted);padding:0 8px">vs</span>
             <select class="compare-select" id="compareB"></select>
-            <button class="compare-btn" onclick="runComparison()">GO</button>
+            <button class="compare-btn" onclick="runComparison()">▶ COMPARE</button>
           </div>
-          <div id="compareResult"></div>
         </div>
+        <div id="compareResult"></div>
       </div>
 
-      <!-- AI ENGINEER (Part 4) -->
-      <div class="panel-section" id="tab-engineer">
-        <div class="chat-wrapper">
-          <div class="chat-suggestions" id="chatSuggestions">
-            <span class="chat-sug" onclick="useSuggestion(this)">Pit window for VER?</span>
-            <span class="chat-sug" onclick="useSuggestion(this)">Undercut risk HAM?</span>
-            <span class="chat-sug" onclick="useSuggestion(this)">Tire deg analysis</span>
-            <span class="chat-sug" onclick="useSuggestion(this)">Who's at risk of SC?</span>
-            <span class="chat-sug" onclick="useSuggestion(this)">Fastest sector driver?</span>
-            <span class="chat-sug" onclick="useSuggestion(this)">Overcut strategy NOR?</span>
-            <span class="chat-sug" onclick="useSuggestion(this)">DRS train situation?</span>
-            <span class="chat-sug" onclick="useSuggestion(this)">Who wins on current pace?</span>
-          </div>
-          <div class="chat-messages" id="chatMessages">
-            <div class="chat-msg ai">
-              <div class="msg-avatar ai-av">ENG</div>
-              <div class="msg-bubble">Race engineer online — live telemetry feed active. Lap 42/58, green flag, 47°C track. VER leading on aged mediums, HAM on fresh softs closing fast. Ask me about strategy, undercuts, tire deg, or anything on the timing screen. I remember our full conversation.</div>
-            </div>
-          </div>
-          <div class="chat-input-row">
-            <textarea class="chat-input" id="chatInput" rows="2" placeholder="Ask the race engineer..."></textarea>
-            <button class="chat-send" id="chatSendBtn" onclick="sendChat()">SEND</button>
-          </div>
-        </div>
-      </div>
+      <!-- AI ENGINEER placeholder (actual chat is floating bubble) -->
+      <div class="panel-section" id="tab-engineer" style="display:none"></div>
 
     </div>
   </div>
 </div>
+</div><!-- /main-area -->
+</div><!-- /content-grid -->
 
 <div class="bottom-bar">
   <div class="weather-strip">
@@ -722,6 +825,42 @@ canvas.compare-canvas{width:100%;display:block;border:1px solid var(--border);ma
     <div class="drawer-section">
       <div class="drawer-section-title">Recent Laps</div>
       <div class="drawer-lap-list" id="drawerLapList"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FLOATING AI RACE ENGINEER -->
+<button class="chat-bubble-btn" onclick="toggleChatFloat()" title="AI Race Engineer">
+  🎙️
+  <span class="bubble-badge" id="bubbleBadge">1</span>
+</button>
+
+<div class="chat-float" id="chatFloat">
+  <div class="chat-float-header">
+    <div class="msg-avatar ai-av" style="width:28px;height:28px">ENG</div>
+    <div class="chat-float-title">AI RACE ENGINEER</div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.1em">● ONLINE</div>
+    <button class="chat-float-close" onclick="toggleChatFloat()">✕</button>
+  </div>
+  <div class="chat-float-body">
+    <div class="chat-suggestions">
+      <span class="chat-sug" onclick="useSuggestion(this)">Pit window VER?</span>
+      <span class="chat-sug" onclick="useSuggestion(this)">Undercut risk?</span>
+      <span class="chat-sug" onclick="useSuggestion(this)">Tire deg analysis</span>
+      <span class="chat-sug" onclick="useSuggestion(this)">SC risk?</span>
+      <span class="chat-sug" onclick="useSuggestion(this)">Who wins on pace?</span>
+      <span class="chat-sug" onclick="useSuggestion(this)">Overcut NOR?</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg ai">
+        <div class="msg-avatar ai-av">ENG</div>
+        <div class="msg-bubble">Race engineer online. Ask me about strategy, undercuts, tire deg, or anything on the timing screen.</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" rows="2" placeholder="Ask the race engineer..."></textarea>
+      <button class="chat-send" id="chatSendBtn" onclick="sendChat()">SEND</button>
     </div>
   </div>
 </div>
@@ -1276,6 +1415,17 @@ function appendTyping(){
   return el;
 }
 
+
+let chatFloatOpen = false;
+function toggleChatFloat() {
+  chatFloatOpen = !chatFloatOpen;
+  document.getElementById('chatFloat').classList.toggle('open', chatFloatOpen);
+  if (chatFloatOpen) {
+    document.getElementById('bubbleBadge').classList.remove('has-msg');
+    setTimeout(() => document.getElementById('chatInput')?.focus(), 200);
+  }
+}
+
 function useSuggestion(el){
   document.getElementById('chatInput').value=el.textContent;
   sendChat();
@@ -1342,18 +1492,17 @@ function renderAll(){
   renderIntervals();
   renderFastest();
   renderPitLog();
-  // Update replay slider max
   const slider = document.getElementById('replaySlider');
   if(slider && !replayMode){ slider.max = totalLaps; slider.value = currentLap; document.getElementById('replayLapNum').textContent = currentLap; }
   const activeTab=document.querySelector('.panel-section.active');
   if(activeTab){
     const id=activeTab.id;
-    if(id==='tab-laptimes')renderLapChart();
-    if(id==='tab-dataviz'){renderPaceChart();renderStrategyViz();renderGapChart()}
+    if(id==='tab-laptimes'){renderLapChart();renderGapChart();renderPaceChart()}
+    if(id==='tab-dataviz'){renderPaceChartViz();renderStrategyViz();renderGapChartViz()}
     if(id==='tab-telemetry'){renderTelemetry();renderDegradChart()}
-    if(id==='tab-strategy')renderStrategyRecommender();
+    if(id==='tab-strategy'){renderStrategyRecommender();renderStrategyVizInTab('strategyVizStrat')}
+    if(id==='tab-pitstops'){renderStrategyVizInTab('strategyViz2')}
   }
-  // Refresh drawer if open
   if(selectedDriverCode) openDrawer(selectedDriverCode);
 }
 
@@ -1416,16 +1565,19 @@ function updateTicker(msg){
 // ─── TABS ──────────────────────────────────────────────────────────────────
 function switchTab(id,btn){
   document.querySelectorAll('.panel-section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-  if(id==='laptimes')renderLapChart();
-  if(id==='dataviz'){setTimeout(()=>{renderPaceChart();renderStrategyViz();renderGapChart()},50)}
+  document.querySelectorAll('.top-nav-btn').forEach(t=>t.classList.remove('active'));
+  const tabEl = document.getElementById('tab-'+id);
+  if(tabEl) tabEl.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='laptimes'){setTimeout(()=>{renderLapChart();renderGapChart();renderPaceChart()},50)}
+  if(id==='dataviz'){setTimeout(()=>{renderPaceChartViz();renderStrategyViz();renderGapChartViz()},50)}
   if(id==='predict')runMLModel();
-  if(id==='telemetry'){renderTelemetry();renderDegradChart()}
+  if(id==='telemetry'){setTimeout(()=>{renderTelemetry();renderDegradChart()},50)}
   if(id==='datahub'){setTimeout(()=>renderHistoricalChart(),50)}
-  if(id==='strategy'){renderStrategyRecommender()}
+  if(id==='strategy'){renderStrategyRecommender();renderStrategyVizInTab('strategyVizStrat')}
   if(id==='compare'){populateCompareSelects();runComparison()}
+  if(id==='pitstops'){renderPitLog();renderStrategyVizInTab('strategyViz2')}
+  if(id==='intervals'){renderIntervals();renderFastest()}
 }
 
 // ─── VSC & RESET ───────────────────────────────────────────────────────────

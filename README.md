@@ -1,308 +1,244 @@
-# 🏎 Pit Wall — F1 Intelligence Dashboard
+# 🏎 PitWall — F1 Race Intelligence Dashboard
 
-> A real-time F1 race analysis dashboard built with vanilla HTML/CSS/JS + FastF1 data, an AI Race Engineer powered by Groq (Llama 3), and live OpenF1 polling.
+> Real-time Formula 1 strategy analysis powered by OpenF1 live telemetry data and an AI race engineer powered by Groq (Llama 3).
 
-![Pit Wall Dashboard](https://img.shields.io/badge/F1-Dashboard-E8003D?style=flat-square) ![Vercel](https://img.shields.io/badge/Deployed-Vercel-000?style=flat-square) ![Groq](https://img.shields.io/badge/AI-Groq%20Llama%203-8B5CF6?style=flat-square)
+**[→ Live Demo](https://pitwall-lilac.vercel.app)** &nbsp;|&nbsp; **[→ Data Pipeline](scripts/fetch_race_data.py)**
 
----
-
-## 🚀 Live Demo
-
-**[pitwall-lilac.vercel.app](https://pitwall-lilac.vercel.app)**
+![PitWall Dashboard](public/screenshot.jpeg)
 
 ---
 
-## ✨ Features
+## What This Is
 
-### 🏁 Live Timing Tower
-- All 20 drivers with real team colours, gap, interval, last lap time
-- Colour-coded lap times: purple (fastest overall), green (personal best), yellow (decent)
-- Tire compound badges (S/M/H) with lap age counter
-- Position change flash animations (green = gained, red = lost)
-- Click any driver to open a detailed stats drawer
+PitWall is a full-stack data engineering project that ingests **real Formula 1 telemetry** from the OpenF1 API (live, free, no auth required), processes it through a serverless proxy, and renders it as a live race intelligence dashboard — the kind of interface a real pit wall engineer uses during a race.
 
-### 📊 Analysis Tabs
-| Tab | What it shows |
-|-----|--------------|
-| **Intervals** | Gap-to-leader bar chart (live updating) |
-| **Fastest** | Session fastest laps ranked with deltas |
-| **Pit Stops** | Full stop log with compound changes and durations |
-| **Lap Times** | Lap time evolution chart for top 5 |
-| **Strategy** | Live pit strategy recommender (PIT NOW / STAY OUT / OVERCUT?) |
-| **Predict** | ML win probability model (gap · tire · pace trend · DRS) |
-| **Compare** | Driver head-to-head with stat table and lap time chart |
-| **Telemetry** | Speed / Throttle / Brake bars for top 6 + tire degradation model |
-| **Data Viz** | Sector analysis, gap evolution, tire strategy overview |
-| **Data Hub** | Kaggle dataset links, FastF1 data pillars, constructor wins chart |
-
-### 🤖 AI Race Engineer (Groq / Llama 3)
-- Floating chat bubble accessible from any view
-- Receives live race context on every message (lap, gaps, tire ages, pit history)
-- Responds like a real pit wall engineer — concise, technical, using F1 jargon
-- Full conversation memory (last 10 turns)
-- Quick-fire suggestion chips for common questions
-
-### 🗂️ Race Picker (9 Pre-Loaded Sessions)
-Switch between iconic races without any backend:
-
-| Session | Year | Notes |
-|---------|------|-------|
-| 🇦🇺 Australian GP | 2026 | Default session |
-| 🇧🇭 Bahrain GP | 2026 | HAM undercut race |
-| 🇲🇨 Monaco GP | 2026 | LEC dominant |
-| 🇧🇪 Belgian GP | 2025 | McLaren 1-2 |
-| 🇲🇨 Monaco GP | 2025 | Classic Leclerc |
-| 🇬🇧 British GP | 2025 | HAM vs RUS |
-| 🇮🇹 Italian GP | 2021 | McLaren Monza shock |
-| 🇧🇷 Brazilian GP | 2022 | VER comeback |
-| 🇺🇸 Las Vegas GP | 2023 | Night race chaos |
-
-Each session has a **distinct circuit profile** (lap time baseline, gap distribution, tyre life) so the simulation feels authentic. If a real `data/<key>.json` file is present in `/public/data/`, it loads that instead.
+The AI race engineer is a **floating chat interface** powered by Groq's free Llama 3 API via a secure serverless proxy, giving you real pit wall radio-style strategy advice with live access to race state, tire data, gaps, and lap history.
 
 ---
 
-## 🗂️ Project Structure
-
-```
-pitwall/
-├── public/
-│   ├── index.html          ← Entire frontend (single file)
-│   └── data/
-│       ├── race_data.json  ← Default session (FastF1 output)
-│       ├── aus_2026.json   ← (optional) pre-baked sessions
-│       ├── bah_2026.json
-│       └── ...
-├── api/
-│   ├── engineer.js         ← AI Race Engineer proxy (Groq)
-│   └── openf1.js           ← OpenF1 live data proxy
-├── scripts/
-│   └── fetch_race_data.py  ← FastF1 data fetcher (run locally)
-├── vercel.json
-└── README.md
-```
-
----
-
-## ⚙️ Setup & Deployment
-
-### 1. Clone & Install
-
-```bash
-git clone https://github.com/yourusername/pitwall.git
-cd pitwall
-npm install -g vercel
-```
-
-### 2. Add Environment Variables
-
-In Vercel dashboard → Project → Settings → Environment Variables:
-
-```
-GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-Get a free key at **[console.groq.com](https://console.groq.com)** — no credit card required.
-
-### 3. Deploy
-
-```bash
-vercel --prod
-```
-
-### 4. (Optional) Generate Real Race Data
-
-Run locally to pre-bake a session as JSON:
-
-```bash
-pip install fastf1 pandas numpy
-python scripts/fetch_race_data.py --year 2026 --round 1 --session R
-```
-
-This outputs `public/data/aus_2026.json`. Commit and redeploy. The dashboard automatically detects and loads real data over the simulation fallback.
-
----
-
-## 🔌 API Endpoints
-
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/engineer` | POST | AI Race Engineer (proxies to Groq) |
-| `/api/openf1` | GET | OpenF1 live session polling |
-
----
-
-## 🧠 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Frontend | Vanilla HTML/CSS/JS — zero frameworks |
-| AI | Groq API (Llama 3.3-70B) via serverless proxy |
-| Live data | OpenF1 REST API (polling every 5s) |
-| Race data | FastF1 Python library → JSON |
-| Hosting | Vercel (serverless functions + static) |
-| Fonts | Titillium Web + Share Tech Mono (Google Fonts) |
+|---|---|
+| **Live Data** | OpenF1 API · Real lap times, tires, pit stops, weather, race control |
+| **Data Pipeline** | Python · FastF1 · Pandas · NumPy (historical fallback) |
+| **Frontend** | Vanilla JS · HTML5 Canvas API · CSS Grid |
+| **AI Backend** | Groq API · Llama 3.3-70B (free tier) |
+| **API Proxy** | Vercel Serverless Functions (Node.js) |
+| **Deployment** | Vercel (static + serverless) |
 
 ---
 
-## 📁 Race Data JSON Schema
+## Features
 
-If you want to pre-bake your own session, the JSON must follow this schema:
+### 🏁 Live Race Data (OpenF1 API)
+- Polls **real F1 data every 5 seconds** — lap times, positions, gaps, pit stops, tire compounds
+- Weather: track temp, air temp, humidity, wind speed from circuit sensors
+- Race control messages: safety car, VSC, flag states from official feed
+- Auto-detects live sessions vs. latest completed race
+- Graceful fallback to FastF1 historical data or simulation mode
 
-```json
-{
-  "meta": {
-    "eventName": "Australian Grand Prix",
-    "circuitName": "Albert Park Circuit",
-    "flag": "🇦🇺",
-    "year": 2026,
-    "round": 1,
-    "currentLap": 58,
-    "totalLaps": 58
-  },
-  "weather": {
-    "trackTemp": 47,
-    "airTemp": 28,
-    "humidity": 58,
-    "windSpeed": 3.3
-  },
-  "drivers": [
-    {
-      "code": "VER",
-      "name": "Max Verstappen",
-      "team": "RedBull",
-      "color": "#3671C6",
-      "pos": 1,
-      "gap": 0,
-      "lastLap": 81.456,
-      "bestLap": 81.221,
-      "tire": "M",
-      "tireAge": 24,
-      "pits": 1,
-      "drs": false
-    }
-  ],
-  "pitLog": [
-    {
-      "lap": 24,
-      "code": "VER",
-      "color": "#3671C6",
-      "from": "S",
-      "to": "M",
-      "duration": 2.4
-    }
-  ],
-  "lapHistory": {
-    "VER": [81.8, 81.6, 81.5, 81.45]
-  },
-  "gapHistory": {
-    "HAM": [1.2, 1.4, 1.3, 1.1]
-  }
-}
+### 📊 Full-Width Dashboard Layout
+- **Top navigation bar** — 10 views, each taking the full screen width
+- **Timing tower** always visible on the left (20 drivers, live updating)
+- Every panel uses a **2-column grid layout** — no more cramped side panels
+- Click any driver row to open a **detail drawer** with lap chart, gap chart, and stats
+
+### 📈 Intervals & Fastest Laps
+- Gap to leader visualised as animated bars
+- Session fastest lap leaderboard with delta to leader
+- Both shown side-by-side on the same screen
+
+### 🎯 Strategy Recommender
+- Live **PIT NOW / STAY OUT / WATCH** recommendations for every driver
+- Reasoning based on tire age, gap to car ahead/behind, laps remaining
+- **Undercut / overcut window** detection with gap analysis
+- Tire strategy overview — visual stint breakdown per driver
+
+### 🔮 ML Win Probability Model
+- Ensemble model scoring each driver's win probability every lap
+- Features: gap to leader, tire compound + age, pace trend, pit stops remaining, DRS eligibility, SC risk
+- Probability normalised across all 20 drivers, shown as ranked cards with progress bars
+- Key feature breakdown panel for the race leader
+
+### ⚖️ Driver Comparison
+- Pick any two drivers for a full head-to-head stat table
+- Best lap, last lap, avg lap, tire health, gap, DRS, pit stops
+- Overlaid lap time chart showing pace trend for both drivers
+
+### 📡 Telemetry
+- Speed / Throttle / Brake bars per driver (real FastF1 data when loaded)
+- Tire degradation model: exponential decay curves for S/M/H compounds
+- Side-by-side with degradation chart in full-width layout
+
+### 💬 AI Race Engineer (Floating Chat)
+- **Always accessible** via the floating `🎙️` bubble — bottom-right corner, any view
+- Full conversation with race context: current lap, gaps, tire ages, flag state
+- Conversation history maintained across turns (last 10 messages)
+- Powered by **Groq's free Llama 3.3-70B** via a secure server-side proxy — API key never in browser
+- Responds in genuine pit wall radio style with F1 jargon
+
+### 🔧 Pit Stops
+- Full pit stop log with lap, driver, duration, and tire change (from → to)
+- Tire strategy overview and stop duration chart side-by-side
+
+### 📦 Data Hub
+- Dataset cards linking to Kaggle F1 datasets
+- All-time constructor wins bar chart
+- FastF1 four-pillar data model reference
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  LIVE DATA (OpenF1 API)                      │
+│                                                             │
+│  api.openf1.org  ──→  /api/openf1.js  ──→  Dashboard        │
+│  (positions, laps,     (Vercel proxy,      (polls every 5s) │
+│   stints, weather,      no auth needed)                     │
+│   race control, pits)                                       │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ fallback if no live session
+                               ↓
+┌─────────────────────────────────────────────────────────────┐
+│               HISTORICAL PIPELINE (Python)                   │
+│                                                             │
+│  FastF1 Library  ──→  fetch_race_data.py  ──→  race_data.json│
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ↓
+┌─────────────────────────────────────────────────────────────┐
+│                     FRONTEND (Browser)                       │
+│                                                             │
+│  index.html ──→ Top Nav + Timing Tower + Full-Width Panels  │
+│      │                                                      │
+│      ├──→ Canvas charts, timing tower, telemetry bars       │
+│      ├──→ ML model (client-side ensemble scoring)           │
+│      ├──→ fetch('/api/openf1') ──→ OpenF1 Proxy (5s poll)  │
+│      └──→ fetch('/api/engineer') ──→ Groq AI Proxy         │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  AI PROXY (Vercel Serverless)                │
+│                                                             │
+│  /api/engineer.js  ──→  Groq API (Llama 3.3-70B, free)     │
+│  (GROQ_API_KEY stored as env var, never in browser)         │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🏗️ Architecture Decision — Option A vs Option B
+## Local Setup
 
-### ✅ Option A — Pre-Loaded Sessions (Current Implementation)
-
-This dashboard uses **Option A**: all race data is either pre-baked into JSON files at build time, or generated client-side from realistic circuit simulation profiles. There is no runtime dependency on Python, FastF1, or any persistent backend.
-
-**Why Option A was the right call:**
-
-| Concern | Option A (this project) | Option B (on-demand FastF1) |
-|---------|------------------------|----------------------------|
-| Reliability | Always works — no external dependency | Breaks if Python server is cold/down |
-| Load time | Instant | 1–3 minutes per session (FastF1 fetch) |
-| Hosting cost | Free (Vercel static + 2 serverless fns) | Requires always-on Python server (~$7/mo) |
-| Recruiter experience | Opens, works, impresses | May timeout or show spinner |
-| Complexity | Low — fetch JSON or generate sim | High — Docker, job queue, Redis, polling |
-
-**What Option A still demonstrates:**
-
-- The `fetch_race_data.py` script (in `/scripts/`) runs FastF1 locally and serialises a full race session to JSON — proving FastF1 integration works end-to-end
-- The JSON schema mirrors what FastF1 actually returns (lap times, telemetry, sector splits, weather, pit stops)
-- Each of the 9 pre-loaded sessions uses a **distinct circuit profile** (Monaco has tight gaps + slow laps; Monza has high speeds + bigger intervals; Spa has long lap times) — showing understanding of real circuit characteristics
-- The dashboard auto-detects real vs sim data and labels it accordingly in the header badge
-
-**How to upgrade a session from sim → real data:**
+### 1. Clone and install
 
 ```bash
-# Run locally (takes 1–3 min, needs FastF1 cache)
-python scripts/fetch_race_data.py --year 2025 --round 13 --session R
-# → writes public/data/spa_2025.json
+git clone https://github.com/Sanss25/f1-intelligence-dashboard
+cd f1-intelligence-dashboard
 
-# Commit and push — Vercel picks it up on next deploy
-git add public/data/spa_2025.json
-git commit -m "feat: add real Spa 2025 race data"
-git push
+# Python pipeline deps (optional, for historical data)
+pip install -r requirements.txt
+
+# Vercel CLI for local dev
+npm install
 ```
 
-The picker tries `/data/<key>.json` first on every load. If it exists, real data wins. If not, sim kicks in. **Zero code changes needed.**
+### 2. Set your API keys
 
----
-
-## 🔮 Planned Features
-
-### Option B — On-Demand FastF1 Fetching
-> **Status: In Development** | **Complexity: High**
-
-The current race picker uses pre-loaded simulation data. A future version will allow users to pick **any race from 2018–present** and fetch live FastF1 data on demand.
-
-**Why it's not live yet — the honest technical reason:**
-
-FastF1 requires a Python runtime with `pandas`, `numpy`, and heavy session caching. Vercel's serverless functions are Node.js-only with a 10-second timeout. FastF1 itself takes **1–3 minutes** to fetch and process a full race session.
-
-The planned architecture for Option B:
-
-```
-User picks race
-      ↓
-/api/fetch-race (Node) → queues job
-      ↓
-Python worker (Railway / Google Cloud Run)
-      ↓
-FastF1 fetches session (~2 min)
-      ↓
-Writes to /data/<key>.json (or Redis cache)
-      ↓
-Frontend polls /api/job-status
-      ↓
-Dashboard loads real data
+```bash
+cp .env.example .env.local
+# Add your Groq API key (free at console.groq.com)
+# GROQ_API_KEY=gsk_...
 ```
 
-**Infrastructure requirements:**
-- A **persistent Python server** (Railway, Render, or Google Cloud Run)
-- A job queue (Redis or simple polling)
-- Docker container with FastF1 + dependencies pre-installed
-- Estimated cold-start time: 30–90 seconds
+### 3. Start local dev server
 
-This will be implemented once the Python backend is containerised. Track progress in the Issues tab.
+```bash
+npm run dev
+# Opens at http://localhost:3000
+# Live data auto-fetches from OpenF1 — no setup needed
+```
 
----
+### 4. (Optional) Run the historical data pipeline
 
-## 📚 Learning Resources
+```bash
+# Fetch 2024 Australian GP (first run takes ~2 mins to cache)
+python scripts/fetch_race_data.py --year 2024 --round 1 --session R
 
-This project was built as part of the **F1 Data Series**:
+# Or use the npm shortcuts
+npm run fetch-2024-monaco
+npm run fetch-2024-brazil
+```
 
-| Part | Topic | Resource |
-|------|-------|----------|
-| Part 0 | Python Environment Setup | [Get Ready Checklist](https://notion.so) |
-| Part 1 | Python, Pandas & Plotly | [The Foundation](https://notion.so) |
-| Part 2 | FastF1 API | [FastF1 Docs](https://docs.fastf1.dev) |
-| Part 3 | ML Winner Prediction | [Scikit-Learn Docs](https://scikit-learn.org) |
-| Part 4 | AI Race Engineer | This project |
-
----
-
-## 🙏 Credits & Acknowledgements
-
-- **[FastF1](https://github.com/theOehrly/Fast-F1)** by Philipp Schaefer — the indispensable F1 data library
-- **[OpenF1](https://openf1.org)** — free live F1 timing API
-- **[Groq](https://groq.com)** — free, ultra-fast Llama 3 inference
-- **[Ergast API](https://ergast.com/mrd/)** — historical F1 data
-- **[Kaggle F1 Dataset](https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020)** — 76 years of race results
+This generates `public/data/race_data.json` as a fallback when no live session is active.
 
 ---
 
-*Built with ❤️ and way too much coffee. Go racing.*
+## Deploy to Vercel (free)
+
+```bash
+# 1. Push to GitHub
+git add .
+git commit -m "Deploy"
+git push origin main
+
+# 2. Import on vercel.com → "New Project" → select your repo
+
+# 3. Add environment variable in Vercel dashboard:
+#    Settings → Environment Variables
+#    Name:  GROQ_API_KEY
+#    Value: gsk_...
+
+# 4. Deploy
+npm run deploy
+```
+
+Your live URL: **https://pitwall-lilac.vercel.app**
+
+---
+
+## Data Pipeline Details
+
+The `fetch_race_data.py` script fetches and transforms:
+
+| Data Type | Source | Fields |
+|---|---|---|
+| Lap Times | F1 timing feed | LapTime, Sector1/2/3, IsPersonalBest |
+| Pit Stops | F1 timing feed | PitInTime, PitOutTime → duration in seconds |
+| Telemetry | Onboard sensors | Speed, Throttle, Brake, RPM, nGear, DRS @4Hz |
+| Weather | Track sensors | TrackTemp, AirTemp, Humidity, WindSpeed, Rainfall |
+| Results | Official results | Position, Points, Status, Gap |
+
+Live data (OpenF1 API) provides the same fields updated every 5 seconds during race weekends.
+
+---
+
+## Resume Bullet Points
+
+> **F1 Race Intelligence Dashboard** — Built a full-stack data engineering project with live Formula 1 telemetry via the OpenF1 API (5-second polling, positions/lap times/tire compounds/pit stops/weather) and a Python FastF1 ETL pipeline for historical fallback. Implemented a full-width multi-view dashboard (10 panels: strategy recommender, ML win-probability model, driver comparison, telemetry, replay scrubber) and an always-available floating AI race engineer chatbot backed by Groq's Llama 3.3-70B via a secure Vercel serverless proxy. Tech: Python, FastF1, OpenF1, Pandas, JavaScript, Canvas API, Node.js, Vercel, Groq.
+
+---
+
+## Fetch Any Race (Historical)
+
+```bash
+# 2024 Season highlights
+python scripts/fetch_race_data.py --year 2024 --round 1   # Australia
+python scripts/fetch_race_data.py --year 2024 --round 6   # Monaco
+python scripts/fetch_race_data.py --year 2024 --round 21  # Brazil (dramatic)
+
+# 2023 for comparison
+python scripts/fetch_race_data.py --year 2023 --round 1
+
+# Qualifying sessions
+python scripts/fetch_race_data.py --year 2024 --round 6 --session Q
+```
+
+---
+
+## License
+
+MIT — use freely, credit appreciated.

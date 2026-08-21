@@ -1254,6 +1254,7 @@ async function loadRealData() {
     currentLap = data.meta.currentLap || 58;
     totalLaps = data.meta.totalLaps || 58;
     document.getElementById('lapCurrent').textContent = currentLap;
+    document.getElementById('lapTotal').textContent = totalLaps;
 
     // Update header
     document.querySelector('.race-name').textContent =

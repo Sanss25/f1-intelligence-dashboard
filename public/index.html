@@ -532,7 +532,7 @@ kbd{background:var(--surface3);border:1px solid var(--border2);padding:1px 6px;b
   </div>
   <div class="header-center">
     <div class="session-label">Race</div>
-    <div class="lap-counter"><span class="lap-current" id="lapCurrent">42</span> / 58</div>
+    <div class="lap-counter"><span class="lap-current" id="lapCurrent">42</span> / <span id="lapTotal">58</span></div>
   </div>
   <div class="header-right">
     <div class="track-temp">
@@ -2142,7 +2142,7 @@ async function loadSelectedRace(){
       drivers=DRIVERS_INIT.map(d=>({...d}));
       pitLog=data.pitLog||[];lapHistory=data.lapHistory||{};gapHistory=data.gapHistory||{};
       realTelemetry=data.telemetry||{};realSectorTimes=data.sectorTimes||{};
-      currentLap=data.meta?.currentLap||preset.currentLap;totalLaps=data.meta?.totalLaps||preset.laps;
+      currentLap=data.meta?.currentLap||preset.currentLap;totalLaps=data.meta?.totalLaps||preset.laps;document.getElementById('lapTotal').textContent=totalLaps;
       loaded=true;usingRealData=true;
     }
   }catch(e){}
@@ -2189,7 +2189,7 @@ function _buildSimFromPreset(preset,key){
     return{...d,code,name:customCodes?code:d.name,lastLap:parseFloat((profile.baseLap+lapVar+(Math.random()-0.5)*0.6).toFixed(3)),bestLap:parseFloat((profile.baseLap+lapVar*0.7+(Math.random()-0.5)*0.3).toFixed(3)),gap:gapVal,tireAge:Math.max(1,Math.floor(Math.random()*22)),tire:['S','M','H'][Math.floor(Math.random()*3)],pits:Math.floor(Math.random()*2)+1,inPit:false,justExited:false,posChange:0};
   });
   DRIVERS_INIT=baseDrivers;drivers=baseDrivers.map(d=>({...d}));
-  currentLap=preset.currentLap;totalLaps=preset.laps;pitLog=[];lapHistory={};gapHistory={};usingRealData=false;
+  currentLap=preset.currentLap;totalLaps=preset.laps;pitLog=[];lapHistory={};gapHistory={};usingRealData=false;document.getElementById('lapTotal').textContent=totalLaps;
   drivers.slice(0,8).forEach(d=>{
     if(d.pits>=1){
       const stopLap=Math.floor(preset.currentLap*0.4+Math.random()*10);
@@ -2256,6 +2256,7 @@ function injectLiveData(data) {
   if (data.meta) {
     currentLap = data.meta.currentLap || currentLap;
     totalLaps  = data.meta.totalLaps  || totalLaps;
+    document.getElementById('lapTotal').textContent = totalLaps;
     document.getElementById('lapCurrent').textContent = currentLap;
 
     // Update header race name
